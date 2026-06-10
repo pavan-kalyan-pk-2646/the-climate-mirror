@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Leaderboard | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='leaderboard', user=user) }}
+
+<div class="wrap">
+
+  <div class="page-hd">
+    <h1>🏆 LEADERBOARD</h1>
+    <p>GLOBAL SUSTAINABILITY RANKINGS · WHO HAS THE BEST ECO SCORE?</p>
+  </div>
+
+  {% if rows %}
+  <div class="board">
+    {% for r in rows %}
+    <div class="lb-row {% if r.username == user %}me{% endif %}">
+      <div class="rank {% if loop.index == 1 %}r1{% elif loop.index == 2 %}r2{% elif loop.index == 3 %}r3{% else %}rn{% endif %}">
+        {% if loop.index == 1 %}🥇
+        {% elif loop.index == 2 %}🥈
+        {% elif loop.index == 3 %}🥉
+        {% else %}#{{ loop.index }}{% endif %}
+      </div>
+      <div class="uname-wrap">
+        <div class="uname {% if r.username == user %}me-name{% endif %}">
+          {{ r.username }}{% if r.username == user %} <span class="you-tag">← YOU</span>{% endif %}
+        </div>
+        <div class="uruns">{{ r.runs }} simulation{{ 's' if r.runs != 1 }}</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-v" style="color:{% if r.avg_score > 60 %}#00ff88{% elif r.avg_score > 35 %}#facc15{% else %}#ff4d4d{% endif %}">{{ r.avg_score }}</div>
+        <div class="stat-l">AVG SCORE</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-v" style="color:#00ffe1">+{{ r.best_temp }}°C</div>
+        <div class="stat-l">BEST TEMP</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-emoji">{% if r.avg_score > 70 %}🌱{% elif r.avg_score > 50 %}🟡{% elif r.avg_score > 30 %}⚠️{% else %}🔥{% endif %}</div>
+        <div class="stat-l">STATUS</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div style="font-size:3rem;margin-bottom:14px">🏆</div>
+    <div>NO DATA YET</div>
+    <a href="/climate" style="color:#00ffe1;display:block;margin-top:12px;font-size:.8rem">⚡ RUN SIMULATIONS TO APPEAR HERE →</a>
+  </div>
+  {% endif %}
+
+  <div class="page-nav">
+    <a href="/climate"   class="pn">⚡ SIMULATE</a>
+    <a href="/history"   class="pn">📊 HISTORY</a>
+    <a href="/stories"   class="pn">🎬 STORIES</a>
+    <a href="/disaster"  class="pn">☣ DISASTER</a>
+    <a href="/behaviors" class="pn">🧠 BEHAVIOR</a>
+    <a href="/narrative" class="pn">🎞 NARRATIVE</a>
+    <a href="/image"     class="pn">🖼 GALLERY</a>
+    <a href="/notebook"  class="pn">📓 NOTEBOOK</a>
+  </div>
+
+</div>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#020617;color:white;font-family:Inter,sans-serif;min-height:100vh;overflow-x:hidden;
+  background-image:radial-gradient(circle at 50% 20%,rgba(0,255,225,.06),transparent 50%);}
+
+.wrap{max-width:960px;margin:0 auto;padding:30px 24px 70px;}
+
+.page-hd{text-align:center;margin-bottom:36px;}
+.page-hd h1{font-family:Orbitron,sans-serif;font-size:2.2rem;font-weight:900;
+  background:linear-gradient(135deg,#fff,#00ffe1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+.page-hd p{font-size:.65rem;color:#64748b;letter-spacing:3px;font-family:Orbitron,sans-serif;}
+
+.board{display:flex;flex-direction:column;gap:10px;}
+
+.lb-row{display:grid;grid-template-columns:64px 1fr 120px 120px 80px;align-items:center;gap:12px;
+  padding:18px 22px;background:rgba(11,18,32,.97);border:1px solid rgba(0,255,225,.1);border-radius:14px;transition:.3s;}
+.lb-row:hover{border-color:rgba(0,255,225,.25);transform:translateX(4px);}
+.lb-row.me{border-color:rgba(0,255,225,.35);background:rgba(0,255,225,.06);}
+
+.rank{font-family:Orbitron,sans-serif;font-size:1.3rem;font-weight:900;text-align:center;}
+.r1{color:#ffd700;text-shadow:0 0 16px rgba(255,215,0,.4);}
+.r2{color:#c0c0c0;}
+.r3{color:#cd7f32;}
+.rn{color:#475569;font-size:1rem;}
+
+.uname{font-family:JetBrains Mono,monospace;font-size:.92rem;color:#e2e8f0;}
+.me-name{color:#00ffe1;}
+.you-tag{font-size:.62rem;color:#00ffe1;font-family:Orbitron,sans-serif;letter-spacing:1px;}
+.uruns{font-size:.68rem;color:#475569;margin-top:3px;}
+
+.stat-cell{text-align:center;}
+.stat-v{font-family:Orbitron,sans-serif;font-size:1.1rem;font-weight:700;}
+.stat-l{font-size:.58rem;color:#64748b;letter-spacing:1px;margin-top:3px;}
+.stat-emoji{font-size:1.4rem;}
+
+.empty-state{text-align:center;padding:70px;color:#64748b;font-family:Orbitron,sans-serif;letter-spacing:3px;font-size:.78rem;}
+
+.page-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin-top:32px;padding-top:20px;border-top:1px solid rgba(0,255,225,.08);}
+.pn{padding:9px 16px;border-radius:8px;border:1px solid rgba(0,255,225,.15);color:#94a3b8;font-family:Orbitron,sans-serif;font-size:.58rem;letter-spacing:2px;text-decoration:none;transition:.2s;}
+.pn:hover{border-color:#00ffe1;color:#00ffe1;background:rgba(0,255,225,.05);}
+
+@media(max-width:700px){.lb-row{grid-template-columns:48px 1fr 90px 90px;}.lb-row>:last-child{display:none;}}
+@media(max-width:500px){.lb-row{grid-template-columns:40px 1fr 80px;}.lb-row>*:nth-child(4){display:none;}}
+</style>
+</body>
+</html>

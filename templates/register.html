@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Register | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='register') }}
+
+<div class="bg"></div>
+
+<div class="page-center">
+  <div class="card">
+    <div class="card-icon">🌍</div>
+    <h2>CREATE ACCOUNT</h2>
+    <p class="card-sub">AI CLIMATE NEURAL REGISTRY</p>
+
+    <form method="POST" action="/register" autocomplete="on">
+      <div class="group">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Choose a username" required autocomplete="username" minlength="3">
+      </div>
+      <div class="group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Choose a password" required autocomplete="new-password" minlength="4">
+      </div>
+      <button type="submit" class="btn-submit">ACTIVATE PROFILE</button>
+    </form>
+
+    {% if error %}
+    <div class="err-box">⚠️ {{ error }}</div>
+    {% endif %}
+
+    <div class="card-links">
+      <a href="/home">← Home</a>
+      <a href="/login">Already registered? Login →</a>
+    </div>
+
+    <div class="features">
+      <div class="feat"><span>🤖</span> 9 AI Agents</div>
+      <div class="feat"><span>📊</span> Full History</div>
+      <div class="feat"><span>🏆</span> Leaderboard</div>
+      <div class="feat"><span>💬</span> AI Chat</div>
+    </div>
+  </div>
+</div>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{min-height:100vh;background:#020617;color:#fff;font-family:Inter,sans-serif;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(to bottom,rgba(2,6,23,.4),rgba(2,6,23,.88)),url("https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=2400&q=80");background-size:cover;background-position:center;}
+.page-center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 16px;}
+.card{
+  width:100%;max-width:440px;padding:48px 40px;border-radius:28px;
+  background:linear-gradient(170deg,rgba(255,255,255,.11),rgba(2,6,23,.93));
+  backdrop-filter:blur(28px);border:1px solid rgba(200,245,255,.22);
+  box-shadow:0 50px 120px rgba(0,0,0,.9),inset 0 0 50px rgba(200,245,255,.07);
+  animation:glow 6s ease-in-out infinite alternate;
+}
+@keyframes glow{from{box-shadow:0 0 60px rgba(200,245,255,.1)}to{box-shadow:0 0 120px rgba(200,245,255,.25)}}
+.card-icon{font-size:2.2rem;text-align:center;margin-bottom:14px;}
+h2{font-family:Orbitron,sans-serif;font-size:1.4rem;letter-spacing:4px;color:#c8faff;text-align:center;text-shadow:0 0 22px rgba(200,245,255,.45);margin-bottom:6px;}
+.card-sub{font-size:.62rem;letter-spacing:3px;color:#64748b;text-align:center;margin-bottom:28px;}
+.group{margin-bottom:18px;}
+.group label{display:block;font-size:.7rem;color:#94a3b8;letter-spacing:1px;margin-bottom:7px;}
+input[type=text],input[type=password]{width:100%;padding:14px 18px;border-radius:40px;background:rgba(2,6,23,.95);border:1px solid rgba(200,245,255,.18);color:#fff;font-family:inherit;font-size:.9rem;transition:.2s;outline:none;}
+input:focus{border-color:#c8faff;box-shadow:0 0 18px rgba(200,245,255,.4);}
+input::placeholder{color:#475569;}
+.btn-submit{width:100%;padding:16px;border-radius:50px;border:none;background:linear-gradient(135deg,#c8faff,#5edcff);color:#020617;font-family:Orbitron,sans-serif;font-weight:900;letter-spacing:3px;font-size:.75rem;cursor:pointer;transition:.4s;margin-top:8px;}
+.btn-submit:hover{transform:translateY(-3px);box-shadow:0 0 70px rgba(200,245,255,.8);}
+.err-box{margin-top:16px;padding:12px;border-radius:10px;text-align:center;background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.35);color:#ffd1d1;font-size:.8rem;}
+.card-links{display:flex;justify-content:space-between;margin-top:22px;font-size:.78rem;flex-wrap:wrap;gap:8px;}
+.card-links a{color:#94a3b8;text-decoration:none;transition:.2s;}
+.card-links a:hover{color:#c8faff;}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px;}
+.feat{background:rgba(0,255,225,.05);border:1px solid rgba(0,255,225,.1);border-radius:8px;padding:8px 12px;font-size:.72rem;color:#7dd3fc;display:flex;align-items:center;gap:6px;}
+</style>
+</body>
+</html>

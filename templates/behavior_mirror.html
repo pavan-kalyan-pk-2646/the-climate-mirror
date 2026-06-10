@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Behavior Mirror | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='behaviors', user=user) }}
+
+<!-- ░░ NATURE BACKGROUND LAYERS ░░ -->
+<div class="nb" id="nb1"></div>
+<div class="nb" id="nb2"></div>
+<div class="forest-mist"></div>
+<div class="forest-aurora"></div>
+<canvas id="fxCanvas"></canvas>
+<div class="forest-grid"></div>
+<div class="forest-vignette"></div>
+
+<div class="page-wrap">
+
+  <!-- ── HERO BAND ── -->
+  <div class="hero-band">
+    <div class="hero-icon">🌿</div>
+    <div class="hero-text">
+      <h1 class="hero-title">AI CLIMATE<br><span>BEHAVIOR MIRROR</span></h1>
+      <p class="hero-sub">Select your daily habits. The AI analyzes your personal carbon footprint and projects its long-term impact on Earth's forests and climate.</p>
+    </div>
+    <div class="hero-live">
+      <div class="live-item"><div class="live-val" id="co2">418.4</div><div class="live-lbl">CO₂ PPM</div></div>
+      <div class="live-sep"></div>
+      <div class="live-item"><div class="live-val red">+1.45°C</div><div class="live-lbl">GLOBAL RISE</div></div>
+      <div class="live-sep"></div>
+      <div class="live-item"><div class="live-val">9</div><div class="live-lbl">AI AGENTS</div></div>
+    </div>
+  </div>
+
+  <!-- ── HOLOGRAPHIC FRAME ── -->
+  <div class="holo-frame">
+    <div class="fc tl"></div><div class="fc tr"></div>
+    <div class="fc bl"></div><div class="fc br"></div>
+    <div class="frame-sweep"></div>
+    <div class="frame-tag">BEHAVIOR ANALYSIS MODULE v2.0</div>
+    <div class="frame-status"><span class="sdot"></span>AI ENGINE ACTIVE</div>
+
+    <div class="holo-inner">
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="sb-hd">
+          <div class="sb-icon">🔬</div>
+          <div>
+            <div class="sb-title">ANALYSIS<br>SYSTEM</div>
+            <div class="sb-sub">Personal Impact Mode</div>
+          </div>
+        </div>
+
+        <div class="sb-stats">
+          <div class="ss"><div class="ss-l">CO₂ LEVEL</div><div class="ss-v" id="sco2">418.4 ppm</div><div class="ss-bar"><div class="ss-f" style="width:72%;background:#ff4d4d"></div></div></div>
+          <div class="ss"><div class="ss-l">AI CONFIDENCE</div><div class="ss-v" id="sconf">96.8%</div><div class="ss-bar"><div class="ss-f" style="width:97%;background:#00ff88"></div></div></div>
+          <div class="ss"><div class="ss-l">FOREST RISK</div><div class="ss-v red" id="srisk">79%</div><div class="ss-bar"><div class="ss-f" id="sriskBar" style="width:79%;background:#facc15"></div></div></div>
+        </div>
+
+        <div class="sb-nav">
+          <div class="sn-title">QUICK ACCESS</div>
+          <a href="/climate"    class="snav">⚡ Full Simulation</a>
+          <a href="/disaster"   class="snav">☣ Disaster Room</a>
+          <a href="/history"    class="snav">📊 History</a>
+          <a href="/notebook"   class="snav">📓 Notebook</a>
+          <a href="/leaderboard"class="snav">🏆 Leaderboard</a>
+        </div>
+
+        <div class="sb-tip">
+          <div>🌳</div>
+          <div>Every 10% reduction in energy use saves ~0.15°C of projected temperature rise</div>
+        </div>
+      </div>
+
+      <!-- MAIN PANEL -->
+      <div class="main-panel">
+
+        <!-- INPUT UI -->
+        <div id="inputUI">
+          <div class="pt">SELECT YOUR BEHAVIORAL PROFILE</div>
+
+          <div class="questions">
+
+            <div class="qcard">
+              <div class="qh">
+                <div class="qi">🚗</div>
+                <div><div class="qt">TRANSPORT USAGE</div><div class="qs">How do you travel daily?</div></div>
+                <div class="qbadge" id="qb0">HIGH</div>
+              </div>
+              <div class="qopts">
+                <label class="opt" onclick="upd(0,10)"><input type="radio" name="transport" value="10" checked>
+                  <div class="oi"><div class="ol">Daily fuel-based travel</div><div class="od">Car, petrol/diesel commute</div><div class="os high">+10</div></div></label>
+                <label class="opt" onclick="upd(0,5)"><input type="radio" name="transport" value="5">
+                  <div class="oi"><div class="ol">Occasional / mixed</div><div class="od">Mix of car, bus, walking</div><div class="os mid">+5</div></div></label>
+                <label class="opt" onclick="upd(0,1)"><input type="radio" name="transport" value="1">
+                  <div class="oi"><div class="ol">Eco-friendly travel</div><div class="od">Cycling, EV, public transit</div><div class="os low">+1</div></div></label>
+              </div>
+            </div>
+
+            <div class="qcard">
+              <div class="qh">
+                <div class="qi">⚡</div>
+                <div><div class="qt">ENERGY CONSUMPTION</div><div class="qs">How much electricity do you use?</div></div>
+                <div class="qbadge" id="qb1">HIGH</div>
+              </div>
+              <div class="qopts">
+                <label class="opt" onclick="upd(1,10)"><input type="radio" name="energy" value="10" checked>
+                  <div class="oi"><div class="ol">High electricity usage</div><div class="od">AC, large appliances, coal grid</div><div class="os high">+10</div></div></label>
+                <label class="opt" onclick="upd(1,6)"><input type="radio" name="energy" value="6">
+                  <div class="oi"><div class="ol">Average household usage</div><div class="od">Standard appliances, mixed grid</div><div class="os mid">+6</div></div></label>
+                <label class="opt" onclick="upd(1,2)"><input type="radio" name="energy" value="2">
+                  <div class="oi"><div class="ol">Energy-efficient / solar</div><div class="od">LED, heat pump, solar panels</div><div class="os low">+2</div></div></label>
+              </div>
+            </div>
+
+            <div class="qcard">
+              <div class="qh">
+                <div class="qi">🥩</div>
+                <div><div class="qt">DIETARY HABITS</div><div class="qs">What do you eat most?</div></div>
+                <div class="qbadge" id="qb2">HIGH</div>
+              </div>
+              <div class="qopts">
+                <label class="opt" onclick="upd(2,8)"><input type="radio" name="diet" value="8" checked>
+                  <div class="oi"><div class="ol">Meat-heavy diet</div><div class="od">Beef, lamb daily — high methane</div><div class="os high">+8</div></div></label>
+                <label class="opt" onclick="upd(2,4)"><input type="radio" name="diet" value="4">
+                  <div class="oi"><div class="ol">Mixed diet</div><div class="od">Some meat, mostly plants</div><div class="os mid">+4</div></div></label>
+                <label class="opt" onclick="upd(2,0)"><input type="radio" name="diet" value="0">
+                  <div class="oi"><div class="ol">Plant-based / vegan</div><div class="od">No meat — lowest food footprint</div><div class="os low">0</div></div></label>
+              </div>
+            </div>
+
+            <div class="qcard">
+              <div class="qh">
+                <div class="qi">🛍</div>
+                <div><div class="qt">CONSUMPTION HABITS</div><div class="qs">How much do you buy?</div></div>
+                <div class="qbadge" id="qb3">HIGH</div>
+              </div>
+              <div class="qopts">
+                <label class="opt" onclick="upd(3,6)"><input type="radio" name="consume" value="6" checked>
+                  <div class="oi"><div class="ol">High consumer</div><div class="od">Fast fashion, new gadgets often</div><div class="os high">+6</div></div></label>
+                <label class="opt" onclick="upd(3,3)"><input type="radio" name="consume" value="3">
+                  <div class="oi"><div class="ol">Moderate consumer</div><div class="od">Buys when needed, some recycling</div><div class="os mid">+3</div></div></label>
+                <label class="opt" onclick="upd(3,0)"><input type="radio" name="consume" value="0">
+                  <div class="oi"><div class="ol">Minimal / sustainable</div><div class="od">Secondhand, repairs, zero-waste</div><div class="os low">0</div></div></label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- LIVE PREVIEW -->
+          <div class="preview-card">
+            <div class="pc-label">🌿 REAL-TIME IMPACT PREVIEW</div>
+            <div class="pc-row">
+              <div class="pc-score" id="liveScore">79%</div>
+              <div class="pc-level" id="liveLevel">HIGH RISK</div>
+            </div>
+            <div class="pc-bar-wrap"><div class="pc-bar" id="liveBar"></div></div>
+            <div class="pc-cats" id="pcCats"></div>
+          </div>
+
+          <button class="btn-go" onclick="startAnalysis()">
+            🔍 &nbsp; ANALYZE MY CLIMATE IMPACT &nbsp; →
+          </button>
+        </div>
+
+        <!-- SCAN UI -->
+        <div id="scanUI" style="display:none">
+          <div class="scan-wrap">
+            <div class="scan-rings">
+              <div class="sr r1"></div>
+              <div class="sr r2"></div>
+              <div class="sr r3"></div>
+              <div class="scan-core">🌿</div>
+            </div>
+            <div class="scan-title">ANALYZING BEHAVIORAL DATA</div>
+            <div class="scan-log" id="scanLog"></div>
+            <div class="scan-prog-row">
+              <div class="scan-prog"><div class="scan-fill" id="scanFill"></div></div>
+              <div class="scan-pct" id="scanPct">0%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESULT UI -->
+        <div id="resultUI" style="display:none">
+          <div class="res-hero">
+            <div class="rh-tag">AI ANALYSIS COMPLETE</div>
+            <div class="rh-title" id="resTitle">—</div>
+            <div class="rh-score" id="resScore">—</div>
+          </div>
+          <div class="res-meter-labels">
+            <span style="color:#00ff88">ECO</span>
+            <span style="color:#facc15">MODERATE</span>
+            <span style="color:#ff4d4d">CRITICAL</span>
+          </div>
+          <div class="res-meter"><div class="res-fill" id="resFill"></div></div>
+          <div class="res-breakdown" id="resBreakdown"></div>
+          <div class="res-verdict" id="resVerdict"></div>
+          <div class="res-recos">
+            <div class="rr-title">🌱 AI RECOMMENDATIONS</div>
+            <div class="rr-list" id="recoList"></div>
+          </div>
+          <div class="res-actions">
+            <button class="btn-retry" onclick="resetForm()">🔄 RECHECK</button>
+            <a href="/climate" class="btn-sim">⚡ Full Simulation →</a>
+            <a href="/leaderboard" class="btn-lb">🏆 Leaderboard</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <div class="bn-label">EXPLORE PLATFORM</div>
+    <div class="bn-links">
+      <a href="/climate"    class="bn">⚡ SIMULATE</a>
+      <a href="/stories"    class="bn">🎬 STORIES</a>
+      <a href="/disaster"   class="bn">☣ DISASTER</a>
+      <a href="/narrative"  class="bn">🎞 NARRATIVE</a>
+      <a href="/image"      class="bn">🖼 GALLERY</a>
+      <a href="/notebook"   class="bn">📓 NOTEBOOK</a>
+      <a href="/history"    class="bn">📊 HISTORY</a>
+      <a href="/leaderboard"class="bn">🏆 RANKS</a>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<style>
+/* ══════════════════════════════════════════
+   ROOT
+══════════════════════════════════════════ */
+:root {
+  --g:  #00ff88;
+  --g2: #7fff50;
+  --yw: #facc15;
+  --rd: #ff4d4d;
+  --bg: #010902;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { background:#010902; color:#e6edf3; font-family:'Rajdhani',sans-serif; min-height:100vh; overflow-x:hidden; }
+
+/* ══════════════════════════════════════════
+   NATURE BACKGROUND SYSTEM
+══════════════════════════════════════════ */
+
+/* Two photo layers — crossfade between them */
+.nb {
+  position: fixed; inset: 0; z-index: -5;
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  transition: opacity 2.5s ease-in-out;
+  filter: saturate(1.5) brightness(.75) contrast(1.1);
+}
+#nb1 { opacity: 1; }
+#nb2 { opacity: 0; }
+
+/* Forest mist / fog layer */
+.forest-mist {
+  position: fixed; inset: 0; z-index: -4; pointer-events: none;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,8,2,.2)  0%,
+      rgba(0,18,4,.1)  20%,
+      rgba(1,12,3,.08) 45%,
+      rgba(0,10,2,.3)  70%,
+      rgba(1,5,2,.96)  100%
+    );
+  animation: mistDrift 22s ease-in-out infinite alternate;
+}
+@keyframes mistDrift {
+  0%   { opacity:.8; transform:scaleX(1)    translateY(0); }
+  40%  { opacity:1;  transform:scaleX(1.02) translateY(-10px); }
+  100% { opacity:.85;transform:scaleX(.99) translateY(12px); }
+}
+
+/* Green aurora glow — deep forest colour tones */
+.forest-aurora {
+  position: fixed; inset: -30%; z-index: -3; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 35%, rgba(0,80,20,.22),  transparent 60%),
+    radial-gradient(ellipse 70% 50% at 90% 25%, rgba(10,110,10,.16), transparent 55%),
+    radial-gradient(ellipse 60% 55% at 50% 90%, rgba(0,50,10,.28),  transparent 65%),
+    radial-gradient(ellipse 55% 45% at 70% 15%, rgba(40,180,40,.08), transparent 50%),
+    radial-gradient(ellipse 40% 40% at 30% 70%, rgba(20,150,60,.07), transparent 50%);
+  filter: blur(80px);
+  animation: auroraDrift 28s ease-in-out infinite alternate;
+}
+@keyframes auroraDrift {
+  0%   { transform: translate(0,0)       scale(1);    opacity:.9; }
+  33%  { transform: translate(35px,-25px) scale(1.04); opacity:1; }
+  66%  { transform: translate(-25px,35px) scale(.97);  opacity:.85; }
+  100% { transform: translate(20px,-15px) scale(1.02); opacity:.95; }
+}
+
+/* FX Canvas — fireflies + particles */
+#fxCanvas {
+  position: fixed; inset: 0; z-index: -2; pointer-events: none;
+}
+
+/* Grid overlay — subtle green tint */
+.forest-grid {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,255,80,.014) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,80,.014) 1px, transparent 1px);
+  background-size: 55px 55px;
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 15%, transparent 70%);
+}
+
+/* Edge vignette */
+.forest-vignette {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse 90% 90% at center, transparent 25%, rgba(1,5,2,.75) 100%);
+}
+
+/* ══════════════════════════════════════════
+   PAGE LAYOUT
+══════════════════════════════════════════ */
+.page-wrap { max-width:1200px; margin:0 auto; padding:26px 20px 80px; position:relative; z-index:1; }
+
+/* ══════════════════════════════════════════
+   HERO BAND
+══════════════════════════════════════════ */
+.hero-band {
+  display:flex; align-items:center; gap:22px;
+  padding:22px 30px;
+  background: linear-gradient(135deg, rgba(0,255,100,.07), rgba(0,80,20,.12));
+  border:1px solid rgba(0,255,100,.22);
+  border-radius:20px; margin-bottom:22px;
+  position:relative; overflow:hidden;
+  box-shadow: 0 0 40px rgba(0,255,100,.08);
+}
+.hero-band::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg, transparent, var(--g), transparent);
+  animation:sweepLine 5s linear infinite;
+}
+@keyframes sweepLine { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+.hero-icon { font-size:2.8rem; flex-shrink:0; animation:leafSway 4s ease-in-out infinite alternate; }
+@keyframes leafSway { from{transform:rotate(-5deg)} to{transform:rotate(5deg)} }
+.hero-title {
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(1.2rem,2.5vw,1.9rem);
+  line-height:1.15; letter-spacing:3px;
+  background:linear-gradient(135deg,#fff,var(--g));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; margin-bottom:6px;
+}
+.hero-title span { -webkit-text-fill-color:var(--g); }
+.hero-sub { font-size:.82rem; color:#64748b; line-height:1.5; max-width:460px; }
+.hero-live {
+  display:flex; align-items:center;
+  background:rgba(0,0,0,.45); border:1px solid rgba(0,255,100,.12);
+  border-radius:12px; padding:12px 18px; flex-shrink:0; margin-left:auto;
+}
+.live-item { text-align:center; padding:0 14px; }
+.live-val { font-family:'JetBrains Mono',monospace; font-size:1.05rem; font-weight:700; color:var(--g); }
+.live-val.red { color:var(--rd); }
+.live-lbl { font-size:.52rem; color:#475569; letter-spacing:2px; margin-top:3px; }
+.live-sep { width:1px; height:28px; background:rgba(0,255,100,.12); }
+
+/* ══════════════════════════════════════════
+   HOLOGRAPHIC FRAME
+══════════════════════════════════════════ */
+.holo-frame {
+  position:relative;
+  border-radius:24px;
+  background:linear-gradient(145deg, rgba(0,255,100,.07), rgba(0,40,10,.25), rgba(0,0,0,.55));
+  border:1px solid rgba(0,255,100,.2);
+  box-shadow:
+    0 0 0 1px rgba(0,255,100,.05),
+    0 50px 100px rgba(0,0,0,.85),
+    inset 0 0 80px rgba(0,255,100,.03);
+  overflow:hidden; margin-bottom:22px;
+  backdrop-filter: blur(8px);
+}
+.holo-frame::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:5;
+  background:linear-gradient(90deg,transparent,var(--g),var(--g2),transparent);
+  animation:frameBorder 5s linear infinite;
+}
+@keyframes frameBorder { 0%{opacity:.5} 50%{opacity:1} 100%{opacity:.5} }
+
+/* Corner brackets */
+.fc { position:absolute; width:26px; height:26px; z-index:4; }
+.tl { top:10px; left:10px;   border-top:2px solid var(--g); border-left:2px solid var(--g); }
+.tr { top:10px; right:10px;  border-top:2px solid var(--g); border-right:2px solid var(--g); }
+.bl { bottom:10px; left:10px; border-bottom:2px solid var(--g); border-left:2px solid var(--g); }
+.br { bottom:10px; right:10px;border-bottom:2px solid var(--g); border-right:2px solid var(--g); }
+
+/* Sweep scanline */
+.frame-sweep {
+  position:absolute; left:0; right:0; height:1px; z-index:3; pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(0,255,100,.25),transparent);
+  animation:sweepDown 10s linear infinite;
+}
+@keyframes sweepDown { from{top:0%} to{top:100%} }
+
+.frame-tag {
+  position:absolute; top:16px; left:50%; transform:translateX(-50%); z-index:4;
+  font-family:'Orbitron',sans-serif; font-size:.52rem;
+  color:rgba(0,255,100,.35); letter-spacing:3px; white-space:nowrap;
+}
+.frame-status {
+  position:absolute; bottom:14px; right:20px; z-index:4;
+  font-family:'JetBrains Mono',monospace; font-size:.56rem;
+  color:rgba(0,255,100,.4); display:flex; align-items:center; gap:5px;
+}
+.sdot { width:6px; height:6px; background:var(--g); border-radius:50%; animation:blink 1.5s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+
+.holo-inner {
+  display:grid; grid-template-columns:230px 1fr;
+  padding:44px 26px 36px;
+}
+
+/* ══════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════ */
+.sidebar {
+  padding-right:22px;
+  border-right:1px solid rgba(0,255,100,.08);
+  display:flex; flex-direction:column; gap:18px;
+}
+.sb-hd {
+  display:flex; align-items:center; gap:10px;
+  padding:14px; border-radius:12px;
+  background:rgba(0,255,100,.06);
+  border:1px solid rgba(0,255,100,.12);
+}
+.sb-icon { font-size:1.6rem; }
+.sb-title { font-family:'Orbitron',sans-serif; font-size:.72rem; color:var(--g); letter-spacing:2px; line-height:1.4; }
+.sb-sub { font-size:.6rem; color:#475569; margin-top:2px; }
+
+.sb-stats { display:flex; flex-direction:column; gap:10px; }
+.ss { padding:10px 12px; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.05); border-radius:10px; }
+.ss-l { font-size:.56rem; color:#475569; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
+.ss-v { font-family:'JetBrains Mono',monospace; font-size:.85rem; color:var(--g); margin-bottom:6px; }
+.ss-v.red { color:var(--yw); }
+.ss-bar { height:3px; background:rgba(255,255,255,.06); border-radius:2px; overflow:hidden; }
+.ss-f { height:100%; border-radius:2px; transition:width 1s; }
+
+.sb-nav { display:flex; flex-direction:column; gap:5px; }
+.sn-title { font-size:.56rem; color:#475569; letter-spacing:2px; text-transform:uppercase; margin-bottom:7px; font-family:'Orbitron',sans-serif; }
+.snav {
+  display:flex; align-items:center; gap:8px; padding:8px 12px;
+  border-radius:9px; border:1px solid rgba(0,255,100,.1);
+  color:#94a3b8; text-decoration:none; font-size:.68rem;
+  font-family:'Orbitron',sans-serif; letter-spacing:1px; transition:.2s;
+}
+.snav:hover { border-color:var(--g); color:var(--g); background:rgba(0,255,100,.05); }
+
+.sb-tip {
+  display:flex; gap:9px; align-items:flex-start;
+  padding:11px 13px; border-radius:10px;
+  background:rgba(0,255,100,.05); border:1px solid rgba(0,255,100,.1);
+  font-size:.7rem; color:#94a3b8; line-height:1.5;
+}
+
+/* ══════════════════════════════════════════
+   MAIN PANEL
+══════════════════════════════════════════ */
+.main-panel { padding-left:26px; }
+.pt {
+  font-family:'Orbitron',sans-serif; font-size:.7rem; color:var(--g);
+  letter-spacing:3px; margin-bottom:20px;
+  display:flex; align-items:center; gap:10px;
+}
+.pt::after { content:''; flex:1; height:1px; background:linear-gradient(to right,rgba(0,255,100,.3),transparent); }
+
+/* QUESTION CARDS */
+.questions { display:flex; flex-direction:column; gap:12px; margin-bottom:18px; }
+.qcard {
+  background:rgba(0,0,0,.5);
+  border:1px solid rgba(0,255,100,.1);
+  border-radius:16px; overflow:hidden; transition:border-color .3s;
+}
+.qcard:hover { border-color:rgba(0,255,100,.22); }
+.qh {
+  display:flex; align-items:center; gap:11px; padding:13px 16px;
+  background:rgba(0,255,100,.04);
+  border-bottom:1px solid rgba(0,255,100,.07);
+}
+.qi { font-size:1.25rem; flex-shrink:0; }
+.qt { font-family:'Orbitron',sans-serif; font-size:.66rem; letter-spacing:2px; color:white; }
+.qs { font-size:.62rem; color:#475569; margin-top:2px; }
+.qbadge {
+  margin-left:auto; padding:3px 9px; border-radius:20px;
+  font-family:'Orbitron',sans-serif; font-size:.54rem; letter-spacing:1px;
+  background:rgba(255,77,77,.12); border:1px solid rgba(255,77,77,.3); color:#ff7070;
+  transition:.3s; white-space:nowrap;
+}
+
+.qopts { padding:10px 12px; display:flex; flex-direction:column; gap:6px; }
+.opt { cursor:pointer; }
+.opt input { display:none; }
+.oi {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; border-radius:9px;
+  border:1px solid rgba(255,255,255,.06);
+  background:rgba(255,255,255,.02); transition:.22s;
+}
+.opt:hover .oi { background:rgba(0,255,100,.04); border-color:rgba(0,255,100,.2); }
+.opt input:checked + .oi {
+  background:rgba(0,255,100,.08);
+  border-color:rgba(0,255,100,.38);
+  box-shadow:0 0 12px rgba(0,255,100,.1);
+}
+.ol { font-size:.82rem; color:#e6edf3; flex:1; font-weight:600; }
+.od { font-size:.7rem; color:#64748b; flex:1; }
+.os {
+  font-family:'JetBrains Mono',monospace; font-size:.68rem; font-weight:700;
+  padding:2px 8px; border-radius:5px; white-space:nowrap;
+}
+.os.high { color:#ff7070; background:rgba(255,77,77,.1); border:1px solid rgba(255,77,77,.2); }
+.os.mid  { color:#facc15; background:rgba(250,204,21,.1); border:1px solid rgba(250,204,21,.2); }
+.os.low  { color:#00ff88; background:rgba(0,255,136,.1); border:1px solid rgba(0,255,136,.2); }
+
+/* LIVE PREVIEW */
+.preview-card {
+  background:rgba(0,255,100,.04); border:1px solid rgba(0,255,100,.14);
+  border-radius:16px; padding:17px 18px; margin-bottom:16px;
+}
+.pc-label { font-family:'Orbitron',sans-serif; font-size:.58rem; color:rgba(0,255,100,.6); letter-spacing:2px; margin-bottom:11px; }
+.pc-row { display:flex; align-items:baseline; gap:12px; margin-bottom:9px; }
+.pc-score { font-family:'JetBrains Mono',monospace; font-size:2.2rem; font-weight:700; color:var(--g); transition:color .4s; }
+.pc-level {
+  font-family:'Orbitron',sans-serif; font-size:.68rem; letter-spacing:2px;
+  padding:4px 11px; border-radius:20px; transition:all .4s;
+  background:rgba(255,77,77,.1); border:1px solid rgba(255,77,77,.25); color:#ff7070;
+}
+.pc-bar-wrap { height:5px; background:rgba(255,255,255,.06); border-radius:3px; overflow:hidden; margin-bottom:11px; }
+.pc-bar { height:100%; width:79%; background:linear-gradient(90deg,var(--g),var(--yw),var(--rd)); border-radius:3px; transition:width .5s ease; }
+.pc-cats { display:flex; gap:7px; flex-wrap:wrap; }
+.pcc { flex:1; min-width:60px; background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.06); border-radius:7px; padding:7px 8px; text-align:center; }
+.pcc-l { font-size:.56rem; color:#475569; letter-spacing:1px; margin-bottom:3px; }
+.pcc-v { font-family:'JetBrains Mono',monospace; font-size:.88rem; font-weight:700; transition:color .3s; }
+
+/* ANALYZE BTN */
+.btn-go {
+  width:100%; padding:18px; border:none; border-radius:14px;
+  background:linear-gradient(135deg,#00c853,#00ff88,#7fff50);
+  color:#010902; font-family:'Orbitron',sans-serif;
+  font-weight:900; letter-spacing:4px; font-size:.78rem; cursor:pointer;
+  box-shadow:0 8px 30px rgba(0,255,100,.3); transition:.4s;
+}
+.btn-go:hover { transform:translateY(-3px); box-shadow:0 18px 50px rgba(0,255,100,.5); }
+
+/* SCAN UI */
+.scan-wrap { padding:50px 30px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:22px; }
+.scan-rings { position:relative; width:120px; height:120px; display:flex; align-items:center; justify-content:center; }
+.sr { position:absolute; border-radius:50%; border:2px solid transparent; animation:spin 2s linear infinite; }
+.r1 { width:120px; height:120px; border-top-color:var(--g); border-right-color:rgba(0,255,100,.2); }
+.r2 { width:88px;  height:88px;  border-top-color:var(--g2); border-left-color:rgba(0,255,100,.15); animation-duration:1.4s; animation-direction:reverse; }
+.r3 { width:58px;  height:58px;  border-top-color:rgba(0,255,100,.5); border-bottom-color:rgba(0,255,100,.5); animation-duration:3s; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.scan-core { font-size:1.9rem; z-index:1; animation:corePulse 1s ease-in-out infinite alternate; }
+@keyframes corePulse { from{transform:scale(1)} to{transform:scale(1.25)} }
+.scan-title { font-family:'Orbitron',sans-serif; font-size:.82rem; letter-spacing:5px; color:var(--g); }
+.scan-log { font-family:'JetBrains Mono',monospace; font-size:.7rem; color:#64748b; min-height:85px; display:flex; flex-direction:column; gap:3px; }
+.slog-line { color:#7dd3fc; }
+.scan-prog-row { display:flex; align-items:center; gap:10px; width:260px; }
+.scan-prog { flex:1; height:5px; background:rgba(255,255,255,.06); border-radius:3px; overflow:hidden; }
+.scan-fill { height:100%; width:0%; background:linear-gradient(90deg,var(--g),var(--g2)); border-radius:3px; transition:width .3s ease; }
+.scan-pct { font-family:'JetBrains Mono',monospace; font-size:.75rem; color:var(--g); min-width:34px; }
+
+/* RESULT UI */
+.res-hero {
+  text-align:center; padding:26px;
+  background:linear-gradient(145deg,rgba(0,255,100,.07),rgba(0,0,0,.45));
+  border:1px solid rgba(0,255,100,.15); border-radius:18px; margin-bottom:16px;
+  position:relative; overflow:hidden;
+}
+.res-hero::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(0,255,100,.09),transparent 60%); pointer-events:none; }
+.rh-tag { font-family:'Orbitron',sans-serif; font-size:.58rem; letter-spacing:3px; color:rgba(0,255,100,.5); margin-bottom:9px; }
+.rh-title { font-family:'Orbitron',sans-serif; font-size:clamp(1.3rem,2.5vw,1.9rem); letter-spacing:3px; margin-bottom:5px; }
+.rh-score { font-family:'JetBrains Mono',monospace; font-size:3rem; font-weight:700; line-height:1; }
+
+.res-meter-labels { display:flex; justify-content:space-between; font-family:'Orbitron',sans-serif; font-size:.56rem; letter-spacing:1px; margin-bottom:5px; }
+.res-meter { height:9px; border-radius:5px; background:rgba(255,255,255,.06); overflow:hidden; margin-bottom:16px; position:relative; }
+.res-fill { height:100%; width:0%; border-radius:5px; transition:width 1.5s ease; }
+
+.res-breakdown { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-bottom:14px; }
+.rb { background:rgba(0,0,0,.5); border:1px solid rgba(255,255,255,.06); border-radius:11px; padding:12px; text-align:center; }
+.rb-l { font-size:.58rem; color:#475569; letter-spacing:1px; margin-bottom:7px; }
+.rb-v { font-family:'JetBrains Mono',monospace; font-size:1.1rem; font-weight:700; margin-bottom:5px; }
+.rb-bar { height:3px; border-radius:2px; background:rgba(255,255,255,.06); overflow:hidden; }
+.rb-bf { height:100%; border-radius:2px; transition:width 1s; }
+
+.res-verdict {
+  display:flex; gap:14px; align-items:flex-start;
+  padding:16px 18px; background:rgba(0,255,100,.04);
+  border:1px solid rgba(0,255,100,.11); border-radius:13px;
+  font-size:.86rem; color:#cbd5e1; line-height:1.7; margin-bottom:14px;
+}
+
+.res-recos { margin-bottom:18px; }
+.rr-title { font-family:'Orbitron',sans-serif; font-size:.62rem; color:var(--g); letter-spacing:2px; margin-bottom:9px; }
+.rr-list { display:flex; flex-direction:column; gap:6px; }
+.rr-item {
+  display:flex; gap:9px; align-items:flex-start; padding:9px 13px;
+  border-radius:9px; background:rgba(0,255,100,.04); border:1px solid rgba(0,255,100,.09);
+  font-size:.8rem; color:#94a3b8; line-height:1.5;
+}
+
+.res-actions { display:flex; gap:9px; flex-wrap:wrap; }
+.btn-retry { padding:11px 20px; border-radius:8px; background:transparent; border:1px solid rgba(0,255,100,.3); color:var(--g); font-family:'Orbitron',sans-serif; font-size:.6rem; letter-spacing:2px; cursor:pointer; transition:.2s; }
+.btn-retry:hover { background:rgba(0,255,100,.07); }
+.btn-sim { padding:11px 20px; border-radius:8px; background:linear-gradient(135deg,var(--g),#00bcd4); color:#010902; font-family:'Orbitron',sans-serif; font-size:.6rem; letter-spacing:2px; text-decoration:none; font-weight:700; transition:.2s; }
+.btn-sim:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,255,100,.3); }
+.btn-lb { padding:11px 20px; border-radius:8px; background:transparent; border:1px solid rgba(250,204,21,.28); color:#facc15; font-family:'Orbitron',sans-serif; font-size:.6rem; letter-spacing:2px; text-decoration:none; transition:.2s; }
+.btn-lb:hover { background:rgba(250,204,21,.07); }
+
+/* BOTTOM NAV */
+.bottom-nav { text-align:center; padding-top:20px; border-top:1px solid rgba(0,255,100,.08); }
+.bn-label { font-family:'Orbitron',sans-serif; font-size:.56rem; color:rgba(0,255,100,.22); letter-spacing:5px; margin-bottom:13px; }
+.bn-links { display:flex; justify-content:center; flex-wrap:wrap; gap:7px; }
+.bn { padding:9px 15px; border-radius:8px; border:1px solid rgba(0,255,100,.12); color:#64748b; font-family:'Orbitron',sans-serif; font-size:.56rem; letter-spacing:1.5px; text-decoration:none; transition:.2s; }
+.bn:hover { border-color:var(--g); color:var(--g); background:rgba(0,255,100,.05); }
+
+/* RESPONSIVE */
+@media(max-width:860px){ .holo-inner{grid-template-columns:1fr;} .sidebar{padding-right:0;border-right:none;border-bottom:1px solid rgba(0,255,100,.08);padding-bottom:18px;} .main-panel{padding-left:0;padding-top:18px;} .res-breakdown{grid-template-columns:1fr 1fr;} .hero-band{flex-direction:column;text-align:center;} .hero-live{width:100%;justify-content:center;margin-left:0;} }
+@media(max-width:500px){ .res-breakdown{grid-template-columns:1fr 1fr;} .od{display:none;} }
+</style>
+
+<script>
+/* ══════════════════════════════════════════
+   NATURE PHOTO CROSSFADE — 4 FOREST PHOTOS
+══════════════════════════════════════════ */
+const forestPhotos = [
+  // Tall towering forest trees — epic green canopy
+  "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2400&q=90",
+  // Misty ancient forest — morning fog between trees
+  "https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?auto=format&fit=crop&w=2400&q=90",
+  // Sunlight rays bursting through forest canopy
+  "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=2400&q=90",
+  // Dark dramatic dense forest path
+  "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=2400&q=90",
+];
+
+const nb1 = document.getElementById('nb1');
+const nb2 = document.getElementById('nb2');
+let photoIdx = 0, activeLayer = 1;
+
+function applyPhoto(el, url) {
+  el.style.backgroundImage = `
+    linear-gradient(to bottom,
+      rgba(0,6,2,.42) 0%,
+      rgba(0,10,3,.38) 30%,
+      rgba(1,6,2,.58) 65%,
+      rgba(1,4,9,.97) 100%
+    ),
+    url("${url}")`;
+}
+
+// Set initial photos
+applyPhoto(nb1, forestPhotos[0]);
+applyPhoto(nb2, forestPhotos[1]);
+
+function nextPhoto() {
+  photoIdx = (photoIdx + 1) % forestPhotos.length;
+  const preloadNext = (photoIdx + 1) % forestPhotos.length;
+
+  if (activeLayer === 1) {
+    applyPhoto(nb2, forestPhotos[photoIdx]);
+    nb2.style.opacity = '1';
+    nb1.style.opacity = '0';
+    activeLayer = 2;
+    setTimeout(() => applyPhoto(nb1, forestPhotos[preloadNext]), 3000);
+  } else {
+    applyPhoto(nb1, forestPhotos[photoIdx]);
+    nb1.style.opacity = '1';
+    nb2.style.opacity = '0';
+    activeLayer = 1;
+    setTimeout(() => applyPhoto(nb2, forestPhotos[preloadNext]), 3000);
+  }
+}
+
+setInterval(nextPhoto, 7000);
+
+/* ══════════════════════════════════════════
+   FX CANVAS — FIREFLIES + GREEN PARTICLES
+══════════════════════════════════════════ */
+const cv = document.getElementById('fxCanvas');
+const cx = cv.getContext('2d');
+let W, H, particles = [], fireflies = [];
+
+function resize() {
+  W = cv.width  = innerWidth;
+  H = cv.height = innerHeight;
+
+  // Green floating particles
+  particles = Array.from({length: 55}, () => ({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random()-.5)*.22, vy: (Math.random()-.5)*.22,
+    r:  Math.random()*.9+.2,
+    a:  Math.random()*.18+.04,
+    g:  Math.floor(Math.random()*80+180), // green channel 180–260
+  }));
+
+  // Fireflies — glowing blinking lights floating upward
+  fireflies = Array.from({length: 50}, () => ({
+    x:     Math.random() * W,
+    y:     Math.random() * H,
+    r:     Math.random() * 2.4 + 1.2,
+    phase: Math.random() * Math.PI * 2,
+    speed: Math.random() * .025 + .01,
+    driftX:(Math.random()-.5) * .35,
+    vy:    -(Math.random() * .25 + .05), // float upward
+    warm:  Math.random() > .35, // warm yellow-green vs pure green
+  }));
+}
+
+function draw() {
+  cx.clearRect(0, 0, W, H);
+
+  // ── PARTICLE NETWORK ──
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i+1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const d  = Math.sqrt(dx*dx + dy*dy);
+      if (d < 85) {
+        cx.beginPath();
+        cx.strokeStyle = `rgba(0,${particles[i].g},30,${(1-d/85)*.05})`;
+        cx.lineWidth = .4;
+        cx.moveTo(particles[i].x, particles[i].y);
+        cx.lineTo(particles[j].x, particles[j].y);
+        cx.stroke();
+      }
+    }
+    cx.beginPath();
+    cx.arc(particles[i].x, particles[i].y, particles[i].r, 0, Math.PI*2);
+    cx.fillStyle = `rgba(0,${particles[i].g},50,${particles[i].a})`;
+    cx.fill();
+    particles[i].x += particles[i].vx;
+    particles[i].y += particles[i].vy;
+    if (particles[i].x < 0 || particles[i].x > W) particles[i].vx *= -1;
+    if (particles[i].y < 0 || particles[i].y > H) particles[i].vy *= -1;
+  }
+
+  // ── FIREFLIES ──
+  fireflies.forEach(f => {
+    f.phase += f.speed;
+    const bright = Math.pow(Math.sin(f.phase) * .5 + .5, 2); // sharper blink
+    const alpha  = bright * .9 + .03;
+    const glowR  = f.r * 6 * bright + 1;
+
+    if (bright > .05) {
+      // Outer soft glow halo
+      const grad = cx.createRadialGradient(f.x, f.y, 0, f.x, f.y, glowR);
+      if (f.warm) {
+        grad.addColorStop(0,   `rgba(200,255,80,${alpha*.7})`);
+        grad.addColorStop(0.35,`rgba(180,255,60,${alpha*.25})`);
+        grad.addColorStop(1,   `rgba(100,200,30,0)`);
+      } else {
+        grad.addColorStop(0,   `rgba(100,255,100,${alpha*.8})`);
+        grad.addColorStop(0.35,`rgba(50,220,80,${alpha*.25})`);
+        grad.addColorStop(1,   `rgba(0,150,50,0)`);
+      }
+      cx.beginPath();
+      cx.arc(f.x, f.y, glowR, 0, Math.PI*2);
+      cx.fillStyle = grad;
+      cx.fill();
+
+      // Bright core
+      cx.beginPath();
+      cx.arc(f.x, f.y, f.r * .55, 0, Math.PI*2);
+      cx.fillStyle = f.warm
+        ? `rgba(255,255,180,${alpha})`
+        : `rgba(180,255,140,${alpha})`;
+      cx.fill();
+    }
+
+    // Float and drift
+    f.x += f.driftX * .12;
+    f.y += f.vy;
+    if (f.y < -20) { f.y = H + 20; f.x = Math.random() * W; }
+    if (f.x < 0)  f.x = W;
+    if (f.x > W)  f.x = 0;
+  });
+
+  requestAnimationFrame(draw);
+}
+resize(); draw();
+window.addEventListener('resize', resize);
+
+/* ══════════════════════════════════════════
+   LIVE STATS
+══════════════════════════════════════════ */
+setInterval(() => {
+  const v = (418 + Math.random()*1.5).toFixed(1);
+  const co2el  = document.getElementById('co2');
+  const sco2el = document.getElementById('sco2');
+  const riskEl = document.getElementById('srisk');
+  const riskBar= document.getElementById('sriskBar');
+  const confEl = document.getElementById('sconf');
+  if(co2el)  co2el.textContent  = v;
+  if(sco2el) sco2el.textContent = v + ' ppm';
+  const rv = Math.floor(74 + Math.random()*16);
+  if(riskEl)  riskEl.textContent = rv + '%';
+  if(riskBar) riskBar.style.width = rv + '%';
+  if(confEl)  confEl.textContent = (94 + Math.random()*5).toFixed(1) + '%';
+}, 3200);
+
+/* ══════════════════════════════════════════
+   QUESTION LOGIC + LIVE PREVIEW
+══════════════════════════════════════════ */
+const maxVals = [10, 10, 8, 6];
+let curVals   = [10, 10, 8, 6];
+
+function upd(idx, val) {
+  curVals[idx] = val;
+  const pct   = val / maxVals[idx];
+  const badge = document.getElementById('qb' + idx);
+  if (badge) {
+    if (pct > .65) { badge.textContent='HIGH'; badge.style.cssText='color:#ff7070;background:rgba(255,77,77,.12);border-color:rgba(255,77,77,.4)'; }
+    else if (pct > .3){ badge.textContent='MED';  badge.style.cssText='color:#facc15;background:rgba(250,204,21,.1);border-color:rgba(250,204,21,.35)'; }
+    else              { badge.textContent='LOW';  badge.style.cssText='color:#00ff88;background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.35)'; }
+  }
+  updatePreview();
+}
+
+function updatePreview() {
+  const total  = curVals.reduce((a,b)=>a+b, 0);
+  const maxT   = maxVals.reduce((a,b)=>a+b, 0);
+  const pct    = Math.round(total/maxT*100);
+  const scoreEl= document.getElementById('liveScore');
+  const levelEl= document.getElementById('liveLevel');
+  const barEl  = document.getElementById('liveBar');
+  if(scoreEl) scoreEl.textContent = pct + '%';
+  if(barEl)   barEl.style.width   = pct + '%';
+  if (pct > 70) {
+    if(scoreEl) scoreEl.style.color = '#ff4d4d';
+    if(levelEl) { levelEl.textContent='HIGH RISK'; levelEl.style.cssText='color:#ff7070;background:rgba(255,77,77,.1);border-color:rgba(255,77,77,.28);font-family:Orbitron,sans-serif;font-size:.68rem;letter-spacing:2px;padding:4px 11px;border-radius:20px;border:1px solid;'; }
+  } else if (pct > 40) {
+    if(scoreEl) scoreEl.style.color = '#facc15';
+    if(levelEl) { levelEl.textContent='MODERATE'; levelEl.style.cssText='color:#facc15;background:rgba(250,204,21,.1);border-color:rgba(250,204,21,.28);font-family:Orbitron,sans-serif;font-size:.68rem;letter-spacing:2px;padding:4px 11px;border-radius:20px;border:1px solid;'; }
+  } else {
+    if(scoreEl) scoreEl.style.color = '#00ff88';
+    if(levelEl) { levelEl.textContent='ECO FRIENDLY'; levelEl.style.cssText='color:#00ff88;background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.28);font-family:Orbitron,sans-serif;font-size:.68rem;letter-spacing:2px;padding:4px 11px;border-radius:20px;border:1px solid;'; }
+  }
+  const cats=['Transport','Energy','Diet','Consume'];
+  const el = document.getElementById('pcCats');
+  if(el) el.innerHTML = cats.map((lbl,i)=>{
+    const p = Math.round(curVals[i]/maxVals[i]*100);
+    const col = p>70?'#ff4d4d':p>40?'#facc15':'#00ff88';
+    return `<div class="pcc"><div class="pcc-l">${lbl}</div><div class="pcc-v" style="color:${col}">${p}%</div></div>`;
+  }).join('');
+}
+updatePreview();
+
+/* ══════════════════════════════════════════
+   SCAN ANIMATION
+══════════════════════════════════════════ */
+const scanSteps = [
+  '> Loading behavioral matrix...',
+  '> Analyzing transport impact...',
+  '> Processing energy footprint...',
+  '> Running dietary model...',
+  '> Calculating consumption load...',
+  '> Cross-referencing climate DB...',
+  '> Agent-1 ANALYZER: Complete ✓',
+  '> Agent-2 ADVISOR: Generating...',
+  '> Projecting 2050 trajectory...',
+  '> Report ready. Rendering...'
+];
+
+function startAnalysis() {
+  const t = +document.querySelector('input[name=transport]:checked').value;
+  const e = +document.querySelector('input[name=energy]:checked').value;
+  const d = +document.querySelector('input[name=diet]:checked').value;
+  const c = +document.querySelector('input[name=consume]:checked').value;
+  document.getElementById('inputUI').style.display = 'none';
+  document.getElementById('scanUI').style.display  = 'block';
+
+  const log  = document.getElementById('scanLog');
+  const fill = document.getElementById('scanFill');
+  const pct  = document.getElementById('scanPct');
+  let step = 0;
+
+  const iv = setInterval(() => {
+    if (step < scanSteps.length) {
+      const el = document.createElement('div');
+      el.className = 'slog-line';
+      el.textContent = scanSteps[step];
+      log.appendChild(el);
+      log.scrollTop = log.scrollHeight;
+      const p = Math.round((step+1)/scanSteps.length*100);
+      fill.style.width = p + '%';
+      pct.textContent  = p + '%';
+      step++;
+    } else {
+      clearInterval(iv);
+      setTimeout(() => showResult(t,e,d,c), 450);
+    }
+  }, 210);
+}
+
+/* ══════════════════════════════════════════
+   RESULTS
+══════════════════════════════════════════ */
+const recos = {
+  high: [
+    '🚗 Switch to public transport or EV — saves 1.4 tonnes CO₂/year',
+    '⚡ Install solar panels or switch to a green energy tariff immediately',
+    '🥗 Reduce red meat to 2× per week — saves 0.8 tonnes CO₂/year',
+    '🌳 Support reforestation — your habits remove 3 trees of carbon daily',
+    '♻️ Audit your consumption — buy secondhand, repair before replacing',
+    '🏠 Insulate your home — can cut heating energy use by 40%'
+  ],
+  mid: [
+    '🚌 Replace 2 car journeys/week with cycling or public transit',
+    '💡 Switch all bulbs to LED and unplug idle devices',
+    '🥦 Try 3 plant-based days per week — cuts diet footprint 30%',
+    '☀️ Consider a green energy tariff for your home',
+    '👕 Buy less fast fashion — quality over quantity'
+  ],
+  low: [
+    '🌍 You\'re making a real difference! Share your habits with others',
+    '🌱 Consider verified carbon offsets for unavoidable flights',
+    '📣 Advocate for stronger climate policy in your community',
+    '💰 Invest in renewable energy companies',
+    '🧑‍🤝‍🧑 Inspire friends and family — your habits are the solution'
+  ]
+};
+
+function showResult(t,e,d,c) {
+  document.getElementById('scanUI').style.display   = 'none';
+  document.getElementById('resultUI').style.display = 'block';
+  const total = t+e+d+c, maxT = 10+10+8+6;
+  const pct   = Math.round(total/maxT*100);
+  const fill  = document.getElementById('resFill');
+  const title = document.getElementById('resTitle');
+  const score = document.getElementById('resScore');
+  const verd  = document.getElementById('resVerdict');
+  const rrList= document.getElementById('recoList');
+
+  setTimeout(() => { if(fill) fill.style.width = pct+'%'; }, 200);
+
+  let col, tTxt, icon, vTxt, rKey;
+  if (pct > 70) {
+    col='#ff4d4d'; tTxt='HIGH CLIMATE RISK'; icon='🔥'; rKey='high';
+    if(fill) fill.style.background='linear-gradient(90deg,#facc15,#ff4d4d)';
+    vTxt='Your lifestyle contributes significantly to climate change. At this level globally, we face 3–4°C warming, catastrophic extreme weather, and forest collapse. Immediate action on energy, transport, and diet is essential.';
+  } else if (pct > 40) {
+    col='#facc15'; tTxt='MODERATE CLIMATE RISK'; icon='⚠️'; rKey='mid';
+    if(fill) fill.style.background='linear-gradient(90deg,#00ff88,#facc15)';
+    vTxt='Your behavior has a noticeable impact. Targeted improvements can cut your footprint 40–60%. Small changes to renewables, diet, and transport make a real difference.';
+  } else {
+    col='#00ff88'; tTxt='LOW CLIMATE IMPACT'; icon='🌿'; rKey='low';
+    if(fill) fill.style.background='linear-gradient(90deg,#00ffe1,#00ff88)';
+    vTxt='Your lifestyle aligns with sustainable climate goals. The forests breathe easier because of choices like yours. Now inspire others to follow your example!';
+  }
+
+  if(title) { title.textContent=tTxt; title.style.color=col; }
+  if(score) { score.textContent=pct+'%'; score.style.color=col; }
+
+  const labels=['Transport','Energy','Diet','Consume'];
+  const vals=[t,e,d,c], mx=[10,10,8,6];
+  document.getElementById('resBreakdown').innerHTML = labels.map((l,i)=>{
+    const p=Math.round(vals[i]/mx[i]*100);
+    const c=p>70?'#ff4d4d':p>40?'#facc15':'#00ff88';
+    return `<div class="rb"><div class="rb-l">${l}</div><div class="rb-v" style="color:${c}">${p}%</div><div class="rb-bar"><div class="rb-bf" style="width:${p}%;background:${c}"></div></div></div>`;
+  }).join('');
+
+  if(verd)   verd.innerHTML   = `<span>${icon}</span><span>${vTxt}</span>`;
+  if(rrList) rrList.innerHTML = recos[rKey].map(r=>
+    `<div class="rr-item"><span>${r.slice(0,2)}</span><span>${r.slice(2)}</span></div>`
+  ).join('');
+}
+
+function resetForm() {
+  document.getElementById('resultUI').style.display = 'none';
+  document.getElementById('inputUI').style.display  = 'block';
+  curVals = [10,10,8,6];
+  [0,1,2,3].forEach(i => upd(i, curVals[i]));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Research Notebook | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='notebook', user=user) }}
+
+<div class="bg"></div>
+<canvas id="snow"></canvas>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">📓 RESEARCH NOTEBOOK · AI CLIMATE MIRROR</div>
+    <h1>THE CLIMATE MIRROR</h1>
+    <p>A comprehensive AI research notebook reflecting how everyday human behavior silently shapes Earth's climate, environment, and the future of all living species.</p>
+    <div class="hero-btns">
+      <button class="hbtn hbtn-primary" onclick="openSection('notebook')">📖 VIEW FULL NOTEBOOK</button>
+      <button class="hbtn hbtn-green"   onclick="openSection('notes')">📝 MY NOTES {% if notes %}({{ notes|length }}){% endif %}</button>
+      <button class="hbtn hbtn-outline" onclick="openSection('facts')">🌍 CLIMATE FACTS</button>
+    </div>
+    <div class="quick-nav">
+      <a href="/climate"  class="qn">⚡ Simulator</a>
+      <a href="/history"  class="qn">📊 History</a>
+      <a href="/disaster" class="qn">☣ Disaster</a>
+      <a href="/leaderboard" class="qn">🏆 Ranks</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NOTEBOOK SECTION ═══ -->
+<div class="section-wrap" id="sec-notebook" style="display:none;">
+  <div class="sec-header">
+    <h2>📓 Complete Research Notebook</h2>
+    <div class="sec-nav">
+      <button onclick="jumpTo('ch1')">1. Project</button>
+      <button onclick="jumpTo('ch2')">2. Agents</button>
+      <button onclick="jumpTo('ch3')">3. Science</button>
+      <button onclick="jumpTo('ch4')">4. Causes</button>
+      <button onclick="jumpTo('ch5')">5. Effects</button>
+      <button onclick="jumpTo('ch6')">6. Solutions</button>
+      <button onclick="jumpTo('ch7')">7. Countries</button>
+      <button onclick="jumpTo('ch8')">8. Future</button>
+      <button onclick="jumpTo('ch9')">9. Actions</button>
+      <button onclick="jumpTo('ch10')">10. Conclusion</button>
+    </div>
+  </div>
+
+  <div class="notebook-body">
+
+    <!-- CHAPTER 1 -->
+    <div class="chapter" id="ch1">
+      <div class="ch-num">01</div>
+      <h2>Project Overview</h2>
+      <div class="highlight-box">
+        <strong>THE CLIMATE MIRROR</strong> is a full-stack agentic AI climate intelligence platform that uses 9 chained AI agents to analyze human behavioral patterns and translate them into measurable climate projections, disaster risk assessments, personalised action plans, and future narratives.
+      </div>
+      <h3>Project Goals</h3>
+      <ul>
+        <li>Make climate change understandable for all people through interactive AI</li>
+        <li>Convert daily human activities into measurable climate impact scores</li>
+        <li>Predict future climate scenarios using multi-agent AI pipelines</li>
+        <li>Encourage sustainable habits through personalised AI insights</li>
+        <li>Support education, research, and policy planning with real data</li>
+        <li>Act as a digital mirror — showing truth about our planetary impact, not assumptions</li>
+      </ul>
+      <h3>Technology Stack</h3>
+      <div class="tech-grid">
+        <div class="tech-item"><span class="tech-icon">🐍</span><span>Python 3.x</span></div>
+        <div class="tech-item"><span class="tech-icon">⚗️</span><span>Flask Framework</span></div>
+        <div class="tech-item"><span class="tech-icon">🗄️</span><span>SQLite Database</span></div>
+        <div class="tech-item"><span class="tech-icon">📊</span><span>Chart.js</span></div>
+        <div class="tech-item"><span class="tech-icon">🎨</span><span>HTML5 / CSS3 / JS</span></div>
+        <div class="tech-item"><span class="tech-icon">🔐</span><span>Werkzeug Auth</span></div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="chapter" id="ch2">
+      <div class="ch-num">02</div>
+      <h2>The 9 AI Agents</h2>
+      <p class="ch-intro">The platform runs a chained pipeline of 9 agents. Each agent processes data and passes its output as context to subsequent agents — creating a connected, intelligent system.</p>
+      <div class="agents-table">
+        <div class="at-row at-header">
+          <div>Agent</div><div>Name</div><div>Function</div><div>Output</div>
+        </div>
+        <div class="at-row"><div class="at-num">0</div><div>Orchestrator</div><div>Coordinates all agents in sequence, builds shared context, logs every step</div><div>Pipeline log, metadata</div></div>
+        <div class="at-row"><div class="at-num">1</div><div>Analyzer</div><div>Deep analysis of 4 climate factors, severity classification (Minimal→Critical)</div><div>Ranked factors, insights</div></div>
+        <div class="at-row"><div class="at-num">2</div><div>Advisor</div><div>Generates prioritised P1/P2/P3 action plan using Analyzer context</div><div>Action items + timeframes</div></div>
+        <div class="at-row"><div class="at-num">3</div><div>Disaster</div><div>Calculates 6 disaster risk scores: heatwave, flood, wildfire, drought, cyclone, famine</div><div>Risk matrix (%)</div></div>
+        <div class="at-row"><div class="at-num">4</div><div>Story</div><div>Generates personalised Year 2050 narrative using ALL prior agent outputs (fully chained)</div><div>3-part narrative</div></div>
+        <div class="at-row"><div class="at-num">5</div><div>Chat</div><div>60-topic climate Q&amp;A with RAG-style context from user's latest simulation</div><div>Contextual answers</div></div>
+        <div class="at-row"><div class="at-num">6</div><div>Forecast</div><div>Linear regression on simulation history — projects next 4 outcomes with trend detection</div><div>Projection curve</div></div>
+        <div class="at-row"><div class="at-num">7</div><div>Comparator</div><div>Compares current run vs personal best, last run, and calculates percentile ranking</div><div>Comparison stats</div></div>
+        <div class="at-row"><div class="at-num">8</div><div>Policy</div><div>Country-specific policy data for India, USA, China, Germany, Brazil, Australia</div><div>Policy recommendations</div></div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="chapter" id="ch3">
+      <div class="ch-num">03</div>
+      <h2>The Science of Climate Change</h2>
+      <h3>The Greenhouse Effect</h3>
+      <p>The greenhouse effect is a natural process that keeps Earth habitable. However, human activities are artificially amplifying it. When sunlight reaches Earth, the surface absorbs it and re-emits it as heat (infrared radiation). Greenhouse gases — CO₂, methane, nitrous oxide, and water vapor — trap this heat, preventing it from escaping into space.</p>
+      <div class="highlight-box">
+        <strong>Key Fact:</strong> Without any greenhouse effect, Earth's average temperature would be -18°C instead of +15°C. The problem is the <em>enhanced</em> greenhouse effect from human emissions.
+      </div>
+      <h3>Major Greenhouse Gases</h3>
+      <div class="gas-grid">
+        <div class="gas-card"><div class="gas-formula">CO₂</div><div class="gas-name">Carbon Dioxide</div><div class="gas-source">Fossil fuels, deforestation, cement</div><div class="gas-stat">418 ppm — 50% above pre-industrial</div></div>
+        <div class="gas-card"><div class="gas-formula">CH₄</div><div class="gas-name">Methane</div><div class="gas-source">Livestock, fossil fuels, wetlands</div><div class="gas-stat">80× more potent than CO₂ over 20 years</div></div>
+        <div class="gas-card"><div class="gas-formula">N₂O</div><div class="gas-name">Nitrous Oxide</div><div class="gas-source">Fertilizers, agriculture, combustion</div><div class="gas-stat">300× more potent than CO₂</div></div>
+        <div class="gas-card"><div class="gas-formula">HFCs</div><div class="gas-name">Fluorinated Gases</div><div class="gas-source">Refrigerants, industrial processes</div><div class="gas-stat">Up to 23,000× more potent than CO₂</div></div>
+      </div>
+      <h3>Climate Feedback Loops</h3>
+      <ul>
+        <li><strong>Ice-Albedo Feedback:</strong> As ice melts, dark ocean/land is exposed, absorbing more heat, melting more ice — a self-reinforcing cycle</li>
+        <li><strong>Permafrost Feedback:</strong> Thawing permafrost releases stored methane and CO₂, further warming the planet</li>
+        <li><strong>Water Vapor Feedback:</strong> Warmer air holds more water vapor (a GHG), amplifying initial warming</li>
+        <li><strong>Forest Dieback:</strong> Warmer, drier conditions kill forests, turning them from carbon sinks to carbon sources</li>
+      </ul>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="chapter" id="ch4">
+      <div class="ch-num">04</div>
+      <h2>Human Causes of Climate Change</h2>
+      <div class="cause-list">
+        <div class="cause-item"><div class="cause-pct" style="color:#ff4d4d">24%</div><div><strong>Energy Production</strong><br><span>Coal, oil, and gas power plants release CO₂ and sulfur compounds. Electricity generation is the single largest emission source globally.</span></div></div>
+        <div class="cause-item"><div class="cause-pct" style="color:#f97316">22%</div><div><strong>Industry</strong><br><span>Cement, steel, chemicals — heavy industry releases CO₂ and methane during production processes. Decarbonizing industry requires hydrogen and CCS.</span></div></div>
+        <div class="cause-item"><div class="cause-pct" style="color:#facc15">16%</div><div><strong>Transport</strong><br><span>1.4 billion vehicles, 100,000 daily flights, millions of ships. Transport emissions have grown 7× faster than any other sector since 1990.</span></div></div>
+        <div class="cause-item"><div class="cause-pct" style="color:#a3e635">14%</div><div><strong>Agriculture &amp; Food</strong><br><span>Livestock (14.5% of global GHGs), fertilizer use (N₂O), rice paddies (methane), and food waste contribute massively to climate change.</span></div></div>
+        <div class="cause-item"><div class="cause-pct" style="color:#34d399">10%</div><div><strong>Deforestation</strong><br><span>4.8 Gt CO₂ released per year from deforestation. The Amazon alone absorbs 2Gt/year but is approaching a tipping point at 20% deforestation.</span></div></div>
+        <div class="cause-item"><div class="cause-pct" style="color:#22d3ee">7%</div><div><strong>Buildings</strong><br><span>Heating, cooling, lighting. Building retrofits with heat pumps and insulation can cut emissions 40–60% with proven technology available today.</span></div></div>
+        <div class="cause-item"><div class="cause-pct" style="color:#a78bfa">7%</div><div><strong>Waste</strong><br><span>Landfills produce methane. Fast fashion, e-waste, and single-use plastics create massive embodied carbon footprints throughout their lifecycle.</span></div></div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="chapter" id="ch5">
+      <div class="ch-num">05</div>
+      <h2>Effects of Climate Change</h2>
+      <div class="effects-grid">
+        <div class="eff-card"><h4>🌡️ Temperature Rise</h4><p>Earth has warmed +1.45°C since pre-industrial times. Every fraction of a degree matters — the difference between 1.5°C and 2°C means 70% more coral reef bleaching, 420 million more people exposed to heatwaves, and 2× more flooding.</p></div>
+        <div class="eff-card"><h4>🧊 Polar Ice Loss</h4><p>Arctic is warming 4× faster than the global average. Summer sea ice could disappear before 2035. Greenland lost 3.3 trillion tonnes of ice since 2002. If fully melted: +7 metres sea level rise globally.</p></div>
+        <div class="eff-card"><h4>🌊 Sea Level Rise</h4><p>Rising 3.7mm/year — 3× faster than in 1993. 800 million people live in low-lying coastal areas at risk. Miami, Jakarta, Mumbai, Shanghai — all facing existential flooding threats by 2100.</p></div>
+        <div class="eff-card"><h4>🔥 Extreme Weather</h4><p>Heatwaves are 5× more likely. Rainfall events are 40% more intense. Wildfire seasons have extended by 3 months globally. Hurricane maximum wind speeds are intensifying as ocean temperatures rise.</p></div>
+        <div class="eff-card"><h4>🌊 Ocean Acidification</h4><p>Oceans absorb 25% of CO₂, making them 26% more acidic than pre-industrial. Coral reefs are bleaching globally. Shell-forming organisms are dissolving. The entire marine food chain is at risk.</p></div>
+        <div class="eff-card"><h4>🦋 Biodiversity Loss</h4><p>1 million species face extinction. 60% of wildlife populations lost since 1970. Climate change is the 2nd largest driver after habitat destruction. Ecosystem collapse threatens our own food security.</p></div>
+        <div class="eff-card"><h4>🍽️ Food Security</h4><p>Crop yields declining 2–6% per decade due to heat and drought. 800 million people already face hunger. Climate change could push 130 million more into extreme poverty by 2030.</p></div>
+        <div class="eff-card"><h4>🏥 Human Health</h4><p>Air pollution from fossil fuels causes 7 million premature deaths/year. Heat-related deaths are increasing. Disease vectors (malaria, dengue) are expanding into new regions as temperatures rise.</p></div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 6 -->
+    <div class="chapter" id="ch6">
+      <div class="ch-num">06</div>
+      <h2>Solutions & What We Must Do</h2>
+      <h3>Energy Transition</h3>
+      <ul>
+        <li>Solar is now the cheapest electricity in history (&lt;$0.02/kWh in optimal locations). Capacity doubled in 2023 alone.</li>
+        <li>Wind energy (onshore + offshore) can power all of Europe. 15MW offshore turbines are now commercial.</li>
+        <li>Nuclear provides 10% of global electricity with near-zero emissions. Small Modular Reactors (SMRs) are next-generation.</li>
+        <li>Green hydrogen (from electrolysis + renewables) can decarbonize shipping, aviation, and heavy industry.</li>
+        <li>Grid-scale batteries make renewable intermittency manageable. Costs fell 97% since 1991.</li>
+      </ul>
+      <h3>Transport Decarbonization</h3>
+      <ul>
+        <li>Electric vehicles now outsell petrol cars in many markets. EVs emit 50–70% less CO₂ over their lifetime.</li>
+        <li>High-speed rail can replace short-haul flights (under 600km) completely.</li>
+        <li>Sustainable Aviation Fuel (SAF) can cut aviation lifecycle emissions by 80%.</li>
+        <li>Ammonia and methanol-powered ships are commercially available now.</li>
+      </ul>
+      <h3>Nature-Based Solutions</h3>
+      <ul>
+        <li>Planting 1 trillion trees could sequester 205 gigatonnes of CO₂ over decades.</li>
+        <li>Protecting existing forests is 3–5× more effective than planting new ones.</li>
+        <li>Restoring peatlands, wetlands, and mangroves provides carbon storage and coastal protection.</li>
+        <li>Regenerative agriculture sequesters carbon in soil while improving yields.</li>
+      </ul>
+      <h3>Policy &amp; Economics</h3>
+      <ul>
+        <li>Carbon pricing makes polluting expensive. Sweden's $130/tonne tax cut emissions 27% while economy grew 100%.</li>
+        <li>The EU's Carbon Border Adjustment Mechanism levels the playing field globally.</li>
+        <li>The Inflation Reduction Act ($369B) is the largest climate investment in US history.</li>
+        <li>Green bonds market hit $500 billion in 2023. Finance has the scale to accelerate transition.</li>
+      </ul>
+      <div class="highlight-box success">
+        <strong>Key Message:</strong> Every solution needed already exists. The challenge is speed and political will — not technology. AI like this platform accelerates both.
+      </div>
+    </div>
+
+    <!-- CHAPTER 7 -->
+    <div class="chapter" id="ch7">
+      <div class="ch-num">07</div>
+      <h2>Country Profiles & Commitments</h2>
+      <div class="country-grid">
+        <div class="country-card">
+          <div class="cc-flag">🇮🇳</div>
+          <h4>India</h4>
+          <p class="cc-stat">7% of global emissions | 3rd largest emitter</p>
+          <p>Net Zero by 2070. 500 GW renewable target by 2030. Solar leader — capacity growing 20%/year. PM Surya Ghar scheme for rooftop solar. 800M people need clean energy access.</p>
+        </div>
+        <div class="country-card">
+          <div class="cc-flag">🇺🇸</div>
+          <h4>United States</h4>
+          <p class="cc-stat">14% of global emissions</p>
+          <p>Inflation Reduction Act: $369B in climate investment. 43% emission cut by 2035 target. But oil &amp; gas production is at record highs. No federal carbon price yet.</p>
+        </div>
+        <div class="country-card">
+          <div class="cc-flag">🇨🇳</div>
+          <h4>China</h4>
+          <p class="cc-stat">31% of global emissions | Largest emitter</p>
+          <p>Net Zero by 2060. Peak emissions target: 2030. World's largest installer of renewables. But still building new coal plants. World's largest EV market.</p>
+        </div>
+        <div class="country-card">
+          <div class="cc-flag">🇩🇪</div>
+          <h4>Germany</h4>
+          <p class="cc-stat">Europe's largest economy</p>
+          <p>56% renewable electricity in 2023. Energiewende (energy transition) policy. Coal phase-out by 2038. Hydrogen strategy: importing from Australia and North Africa.</p>
+        </div>
+        <div class="country-card">
+          <div class="cc-flag">🇧🇷</div>
+          <h4>Brazil</h4>
+          <p class="cc-stat">Hosts 20% of global biodiversity</p>
+          <p>85% renewable electricity from hydro. Amazon Fund reinstated. Net Zero by 2050 pledge. But Amazon deforestation continues — a global tipping point risk.</p>
+        </div>
+        <div class="country-card">
+          <div class="cc-flag">🇪🇺</div>
+          <h4>European Union</h4>
+          <p class="cc-stat">Fit for 55 climate package</p>
+          <p>55% emission reduction by 2030. Carbon Border Adjustment Mechanism. EV mandate (100% ZEV by 2035). Nature Restoration Law. Carbon price: €60+/tonne.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 8 -->
+    <div class="chapter" id="ch8">
+      <div class="ch-num">08</div>
+      <h2>Future Scenarios</h2>
+      <div class="scenarios">
+        <div class="scenario best"><div class="sc-label">BEST CASE: +1.5°C</div><div class="sc-desc">Requires emergency action starting now. Deep emission cuts across all sectors by 2030. Possible with current technology but needs unprecedented political will. Coral reefs stressed but survive. Managed coastal flooding. Nature recovers over time.</div></div>
+        <div class="scenario mid"><div class="sc-label">MIDDLE CASE: +2.0°C</div><div class="sc-desc">The Paris Agreement's upper limit. Coral reefs largely destroyed. Significant ice loss. Hundreds of millions face food and water stress. Higher flood frequency. Still manageable with massive adaptation investment.</div></div>
+        <div class="scenario warn"><div class="sc-label">LIKELY CASE: +2.7°C</div><div class="sc-desc">Current trajectory with existing pledges (but without full implementation). Severe disruption to food systems, coastal cities, and ecosystems. Mass migration. Major economic disruption. Large parts of tropics become difficult to inhabit.</div></div>
+        <div class="scenario bad"><div class="sc-label">WORST CASE: +4°C+</div><div class="sc-desc">Business-as-usual with no new action. Catastrophic and irreversible changes. Potential collapse of agricultural systems. Uninhabitable tropics. Billions displaced. Feedback loops may trigger runaway warming beyond human control.</div></div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 9 -->
+    <div class="chapter" id="ch9">
+      <div class="ch-num">09</div>
+      <h2>Personal & Collective Actions</h2>
+      <div class="actions-grid">
+        <div class="act-cat">
+          <h4>🔴 HIGH IMPACT PERSONAL ACTIONS</h4>
+          <ul>
+            <li>Shift to plant-based diet (saves 1.5 tonnes CO₂/year)</li>
+            <li>Avoid one transatlantic flight (saves 1.5–3 tonnes)</li>
+            <li>Switch to electric vehicle (saves 1.4 tonnes/year)</li>
+            <li>Install rooftop solar (saves 1.5 tonnes/year)</li>
+            <li>Switch to green energy tariff (saves 1.5 tonnes/year)</li>
+          </ul>
+        </div>
+        <div class="act-cat">
+          <h4>🟡 MEDIUM IMPACT ACTIONS</h4>
+          <ul>
+            <li>Reduce red meat consumption by 50% (saves 0.8 tonnes)</li>
+            <li>Use public transport instead of car (saves 0.7 tonnes)</li>
+            <li>Insulate home and upgrade to heat pump (saves 0.6 tonnes)</li>
+            <li>Buy less — reduce consumer spending 25% (saves 0.4 tonnes)</li>
+            <li>Switch to LED lighting throughout home (saves 0.15 tonnes)</li>
+          </ul>
+        </div>
+        <div class="act-cat">
+          <h4>🟢 SYSTEMIC ACTIONS</h4>
+          <ul>
+            <li>Vote for climate-aware leaders and policies</li>
+            <li>Divest savings from fossil fuel companies</li>
+            <li>Support climate NGOs and advocacy organisations</li>
+            <li>Talk about climate change — normalise it in conversations</li>
+            <li>Engage your employer on corporate sustainability</li>
+          </ul>
+        </div>
+        <div class="act-cat">
+          <h4>❌ WHAT NOT TO DO</h4>
+          <ul>
+            <li>Do not waste electricity, water, or food</li>
+            <li>Do not burn waste or plastics</li>
+            <li>Do not cut trees unnecessarily</li>
+            <li>Do not treat climate change as a future problem</li>
+            <li>Do not rely on carbon offsets alone — reduce first</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAPTER 10 -->
+    <div class="chapter" id="ch10">
+      <div class="ch-num">10</div>
+      <h2>Conclusion</h2>
+      <div class="highlight-box success">
+        Climate change is not a distant threat — it is happening now, measured in real data, visible in real events, and felt by real people and species. The Climate Mirror exists because data alone is not enough — we need intelligence that translates numbers into meaning, and meaning into action.
+      </div>
+      <p>Our 9 AI agents don't just predict outcomes — they explain causes, rank priorities, model disasters, generate futures, and give every person a personalised path forward. This is what agentic AI means: not just answering questions, but actively guiding decisions.</p>
+      <p style="margin-top:14px;">The technology to solve climate change exists. The economic case is clear. The scientific consensus is overwhelming. What remains is the most human challenge: collective will, sustained action, and the courage to choose the future over short-term convenience.</p>
+      <div class="highlight-box" style="margin-top:20px">
+        <strong>The planet reflects our choices. The Mirror shows you the reflection. What you do next is up to you.</strong>
+      </div>
+
+      <div class="nav-footer">
+        <a href="/climate"    class="nf-btn">⚡ Run Simulation</a>
+        <a href="/disaster"   class="nf-btn">☣ Disaster Room</a>
+        <a href="/stories"    class="nf-btn">🎬 Stories</a>
+        <a href="/history"    class="nf-btn">📊 History</a>
+        <a href="/leaderboard"class="nf-btn">🏆 Leaderboard</a>
+      </div>
+    </div>
+
+    <div class="nb-back-btn" onclick="backToHero()">← BACK TO MIRROR</div>
+  </div>
+</div>
+
+<!-- ═══ MY NOTES SECTION ═══ -->
+<div class="section-wrap" id="sec-notes" style="display:none;">
+  <div class="sec-header">
+    <h2>📝 My Research Notes</h2>
+    <button class="sec-close" onclick="backToHero()">← Back</button>
+  </div>
+  <div class="notes-area">
+    <div class="notes-form-card">
+      <h3>Add New Note</h3>
+      <form method="POST" action="/save_note">
+        <input type="text" name="title" placeholder="Note title (e.g. CO₂ findings, simulation insights...)" required class="notes-input">
+        <textarea name="content" placeholder="Write your research notes, observations, ideas, or questions here..." required class="notes-ta"></textarea>
+        <div class="form-row">
+          <button type="submit" class="btn-save">💾 SAVE NOTE</button>
+          <button type="button" class="btn-cancel" onclick="backToHero()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    {% if notes %}
+    <div class="notes-saved">
+      <h3>Saved Notes ({{ notes|length }})</h3>
+      <div class="notes-list">
+        {% for n in notes %}
+        <div class="note-card">
+          <div class="note-hd">
+            <h4>{{ n.title }}</h4>
+            <span class="note-date">{{ n.created[:10] if n.created else '' }}</span>
+          </div>
+          <p>{{ n.content }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% else %}
+    <div class="notes-empty">
+      <div style="font-size:3rem;margin-bottom:12px;">📝</div>
+      <p>No notes yet. Add your first research note above!</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ═══ CLIMATE FACTS SECTION ═══ -->
+<div class="section-wrap" id="sec-facts" style="display:none;">
+  <div class="sec-header">
+    <h2>🌍 100 Key Climate Facts</h2>
+    <button class="sec-close" onclick="backToHero()">← Back</button>
+  </div>
+  <div class="facts-area">
+    <div class="facts-filter">
+      <button class="ff active" onclick="filterFacts('all',this)">All</button>
+      <button class="ff" onclick="filterFacts('science',this)">Science</button>
+      <button class="ff" onclick="filterFacts('impact',this)">Impact</button>
+      <button class="ff" onclick="filterFacts('solution',this)">Solutions</button>
+      <button class="ff" onclick="filterFacts('country',this)">Countries</button>
+    </div>
+    <div class="facts-grid" id="factsGrid"></div>
+  </div>
+</div>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#020617;color:#e5e7eb;font-family:Inter,sans-serif;min-height:100vh;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:-2;background:linear-gradient(rgba(2,6,23,.88),rgba(2,6,23,.95)),url("https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2400&q=80");background-size:cover;}
+#snow{position:fixed;inset:0;z-index:-1;pointer-events:none;}
+
+/* HERO */
+.hero{min-height:85vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:30px 20px;}
+.hero-inner{max-width:820px;}
+.hero-tag{display:inline-block;padding:6px 18px;border-radius:20px;background:rgba(0,255,225,.07);border:1px solid rgba(0,255,225,.18);color:#7dd3fc;font-family:Orbitron,sans-serif;font-size:.6rem;letter-spacing:3px;margin-bottom:18px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);letter-spacing:8px;color:white;text-shadow:0 0 40px rgba(125,211,252,.4);margin-bottom:16px;}
+.hero p{max-width:700px;font-size:1rem;color:#cbd5f5;line-height:1.75;margin:0 auto 28px;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.hbtn{padding:16px 32px;border-radius:50px;font-family:Orbitron,sans-serif;letter-spacing:3px;font-size:.7rem;cursor:pointer;transition:.3s;border:none;}
+.hbtn-primary{background:linear-gradient(135deg,#60a5fa,#818cf8);color:white;box-shadow:0 8px 30px rgba(96,165,250,.3);}
+.hbtn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(96,165,250,.5);}
+.hbtn-green{background:linear-gradient(135deg,#00ffe1,#00bcd4);color:#020617;font-weight:700;}
+.hbtn-green:hover{transform:translateY(-3px);}
+.hbtn-outline{background:transparent;border:2px solid rgba(0,255,225,.4)!important;color:#00ffe1;}
+.hbtn-outline:hover{background:rgba(0,255,225,.08);}
+.quick-nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+.qn{padding:7px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.12);color:#94a3b8;text-decoration:none;font-size:.68rem;transition:.2s;}
+.qn:hover{border-color:rgba(0,255,225,.3);color:#00ffe1;}
+
+/* SECTIONS */
+.section-wrap{max-width:1100px;margin:0 auto;padding:30px 24px 80px;}
+.sec-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;padding-bottom:16px;border-bottom:2px solid rgba(0,255,225,.15);flex-wrap:wrap;gap:12px;}
+.sec-header h2{font-family:Orbitron,sans-serif;font-size:1.3rem;color:#00ffe1;letter-spacing:3px;}
+.sec-nav{display:flex;flex-wrap:wrap;gap:6px;}
+.sec-nav button{padding:5px 12px;background:#020617;border:1px solid rgba(0,255,225,.15);border-radius:6px;color:#7dd3fc;font-size:.62rem;cursor:pointer;font-family:Orbitron,sans-serif;transition:.2s;}
+.sec-nav button:hover{border-color:rgba(0,255,225,.4);color:#00ffe1;}
+.sec-close{padding:8px 18px;background:transparent;border:1px solid rgba(0,255,225,.2);border-radius:8px;color:#7dd3fc;cursor:pointer;font-family:Orbitron,sans-serif;font-size:.65rem;letter-spacing:2px;transition:.2s;}
+.sec-close:hover{border-color:var(--g,#00ffe1);color:#00ffe1;}
+
+/* NOTEBOOK BODY */
+.notebook-body{background:linear-gradient(170deg,rgba(255,255,255,.97),rgba(240,248,255,.96));color:#020617;border-radius:20px;padding:50px 48px;box-shadow:0 50px 120px rgba(0,0,0,.7);}
+.chapter{margin-bottom:60px;padding-bottom:40px;border-bottom:2px solid #dbeafe;}
+.chapter:last-of-type{border-bottom:none;}
+.ch-num{font-family:Orbitron,sans-serif;font-size:3rem;font-weight:900;color:rgba(30,58,138,.12);letter-spacing:-2px;margin-bottom:-10px;}
+.chapter h2{font-family:Orbitron,sans-serif;font-size:1.3rem;color:#1e3a8a;margin-bottom:16px;letter-spacing:2px;}
+.chapter h3{font-family:Orbitron,sans-serif;font-size:.85rem;color:#1d4ed8;margin:20px 0 10px;letter-spacing:1px;}
+.chapter p,.chapter li{color:#334155;font-size:.95rem;line-height:1.85;margin-top:6px;}
+.chapter ul{padding-left:22px;}
+.ch-intro{color:#475569;font-size:.92rem;line-height:1.7;margin-bottom:20px;}
+.highlight-box{background:#dbeafe;border-left:6px solid #3b82f6;padding:18px 22px;border-radius:0 12px 12px 0;margin:16px 0;color:#1e3a8a;font-size:.9rem;line-height:1.7;}
+.highlight-box.success{background:#dcfce7;border-left-color:#16a34a;color:#15803d;}
+
+/* TECH GRID */
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px;}
+.tech-item{background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:.82rem;color:#1e3a8a;}
+.tech-icon{font-size:1.1rem;}
+
+/* AGENTS TABLE */
+.agents-table{margin-top:14px;border-radius:12px;overflow-x: hidden;border:1px solid #bfdbfe;}
+.at-row{display:grid;grid-template-columns:50px 120px 1fr 150px;gap:0;padding:10px 14px;border-bottom:1px solid #dbeafe;font-size:.8rem;align-items:start;}
+.at-header{background:#1e3a8a;color:white;font-family:Orbitron,sans-serif;font-size:.62rem;letter-spacing:1px;font-weight:700;}
+.at-row:nth-child(even):not(.at-header){background:#f0f9ff;}
+.at-num{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:#1d4ed8;padding-top:2px;}
+
+/* GAS GRID */
+.gas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px;}
+.gas-card{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:16px;}
+.gas-formula{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;color:#1d4ed8;margin-bottom:4px;}
+.gas-name{font-weight:600;color:#1e3a8a;margin-bottom:4px;font-size:.85rem;}
+.gas-source{font-size:.78rem;color:#64748b;margin-bottom:6px;}
+.gas-stat{font-size:.78rem;color:#dc2626;font-weight:500;}
+
+/* CAUSES */
+.cause-list{margin-top:14px;}
+.cause-item{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #dbeafe;align-items:flex-start;}
+.cause-pct{font-family:Orbitron,sans-serif;font-size:1.4rem;font-weight:700;min-width:52px;}
+.cause-item strong{display:block;font-size:.9rem;color:#1e3a8a;margin-bottom:3px;}
+.cause-item span{font-size:.82rem;color:#475569;line-height:1.6;}
+
+/* EFFECTS */
+.effects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:14px;}
+.eff-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:18px;}
+.eff-card h4{font-size:.85rem;font-weight:700;color:#1e3a8a;margin-bottom:8px;}
+.eff-card p{font-size:.8rem;color:#475569;line-height:1.65;}
+
+/* SCENARIOS */
+.scenarios{display:flex;flex-direction:column;gap:12px;margin-top:14px;}
+.scenario{padding:18px 20px;border-radius:12px;border-left:5px solid;}
+.best{background:#f0fdf4;border-color:#16a34a;}
+.mid{background:#fffbeb;border-color:#d97706;}
+.warn{background:#fff7ed;border-color:#ea580c;}
+.bad{background:#fef2f2;border-color:#dc2626;}
+.sc-label{font-family:Orbitron,sans-serif;font-size:.75rem;letter-spacing:2px;font-weight:700;margin-bottom:8px;color:#1e3a8a;}
+.sc-desc{font-size:.85rem;color:#475569;line-height:1.65;}
+
+/* ACTIONS GRID */
+.actions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:14px;}
+.act-cat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:18px;}
+.act-cat h4{font-size:.75rem;font-family:Orbitron,sans-serif;letter-spacing:1px;margin-bottom:12px;}
+.act-cat li{font-size:.8rem;color:#475569;line-height:1.7;margin-top:4px;}
+
+/* COUNTRY GRID */
+.country-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:14px;}
+.country-card{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:16px;}
+.cc-flag{font-size:2rem;margin-bottom:6px;}
+.country-card h4{font-family:Orbitron,sans-serif;font-size:.78rem;color:#1e3a8a;margin-bottom:4px;}
+.cc-stat{font-size:.72rem;color:#dc2626;font-weight:600;margin-bottom:6px;}
+.country-card p{font-size:.78rem;color:#475569;line-height:1.6;}
+
+/* NAV FOOTER */
+.nav-footer{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;}
+.nf-btn{padding:11px 22px;border-radius:8px;border:2px solid #1d4ed8;color:#1d4ed8;text-decoration:none;font-family:Orbitron,sans-serif;font-size:.62rem;letter-spacing:2px;transition:.2s;}
+.nf-btn:hover{background:#1d4ed8;color:white;}
+
+.nb-back-btn{text-align:center;padding:24px;font-family:Orbitron,sans-serif;font-size:.72rem;color:#1e3a8a;cursor:pointer;letter-spacing:4px;transition:.2s;}
+.nb-back-btn:hover{color:#1d4ed8;}
+
+/* NOTES */
+.notes-area{display:flex;flex-direction:column;gap:24px;}
+.notes-form-card{background:rgba(11,18,32,.95);border:1px solid rgba(0,255,225,.15);border-radius:16px;padding:28px;}
+.notes-form-card h3{font-family:Orbitron,sans-serif;color:#00ffe1;font-size:.8rem;letter-spacing:2px;margin-bottom:16px;}
+.notes-input{width:100%;background:#020617;border:1px solid rgba(0,255,225,.15);border-radius:10px;padding:12px 16px;color:white;font-family:Inter,sans-serif;font-size:.9rem;margin-bottom:12px;outline:none;transition:.2s;}
+.notes-ta{width:100%;background:#020617;border:1px solid rgba(0,255,225,.15);border-radius:10px;padding:12px 16px;color:white;font-family:Inter,sans-serif;font-size:.9rem;height:120px;resize:vertical;outline:none;margin-bottom:12px;transition:.2s;}
+.notes-input:focus,.notes-ta:focus{border-color:#00ffe1;}
+.notes-input::placeholder,.notes-ta::placeholder{color:#475569;}
+.form-row{display:flex;gap:10px;align-items:center;}
+.btn-save{padding:12px 26px;background:linear-gradient(135deg,#00ffe1,#00bcd4);border:none;border-radius:8px;color:#020617;font-family:Orbitron,sans-serif;font-size:.68rem;letter-spacing:2px;cursor:pointer;font-weight:700;}
+.btn-cancel{padding:11px 20px;background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#94a3b8;font-family:Orbitron,sans-serif;font-size:.65rem;cursor:pointer;}
+.notes-saved h3{font-family:Orbitron,sans-serif;color:#00ffe1;font-size:.78rem;letter-spacing:2px;margin-bottom:16px;}
+.notes-list{display:flex;flex-direction:column;gap:10px;}
+.note-card{background:rgba(0,255,225,.04);border:1px solid rgba(0,255,225,.12);border-radius:12px;padding:18px 20px;}
+.note-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:10px;}
+.note-card h4{font-family:Orbitron,sans-serif;font-size:.72rem;color:#00ffe1;letter-spacing:1px;}
+.note-date{font-size:.62rem;color:#475569;white-space:nowrap;}
+.note-card p{font-size:.82rem;color:#94a3b8;line-height:1.65;}
+.notes-empty{text-align:center;padding:50px;color:#64748b;font-size:.88rem;}
+
+/* FACTS */
+.facts-area{display:flex;flex-direction:column;gap:20px;}
+.facts-filter{display:flex;gap:8px;flex-wrap:wrap;}
+.ff{padding:7px 16px;background:rgba(0,255,225,.05);border:1px solid rgba(0,255,225,.15);border-radius:20px;color:#94a3b8;font-family:Orbitron,sans-serif;font-size:.6rem;cursor:pointer;letter-spacing:1px;transition:.2s;}
+.ff:hover,.ff.active{background:rgba(0,255,225,.12);border-color:#00ffe1;color:#00ffe1;}
+.facts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.fact-card{background:rgba(11,18,32,.9);border:1px solid rgba(0,255,225,.1);border-radius:12px;padding:16px;transition:.2s;}
+.fact-card:hover{border-color:rgba(0,255,225,.3);background:rgba(0,255,225,.04);}
+.fact-num{font-family:Orbitron,sans-serif;font-size:.6rem;color:#475569;letter-spacing:1px;margin-bottom:6px;}
+.fact-text{font-size:.82rem;color:#cbd5e1;line-height:1.65;}
+.fact-cat{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.58rem;margin-top:8px;font-family:Orbitron,sans-serif;letter-spacing:1px;}
+.fc-science{background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.2);}
+.fc-impact{background:rgba(255,77,77,.1);color:#ff7070;border:1px solid rgba(255,77,77,.2);}
+.fc-solution{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid rgba(0,255,136,.2);}
+.fc-country{background:rgba(250,204,21,.1);color:#facc15;border:1px solid rgba(250,204,21,.2);}
+
+@media(max-width:700px){
+  .notebook-body{padding:30px 20px;}
+  .at-row{grid-template-columns:40px 90px 1fr;}.at-row>*:last-child{display:none;}
+  .at-header>*:last-child{display:none;}
+}
+</style>
+<script>
+// SNOW
+const sc=document.getElementById('snow'),x=sc.getContext('2d');let W,H,flakes=[];
+function rs(){W=sc.width=innerWidth;H=sc.height=innerHeight;flakes=[...Array(100)].map(()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.5,vy:Math.random()*.5+.2}));}
+function ds(){x.clearRect(0,0,W,H);flakes.forEach(f=>{x.beginPath();x.arc(f.x,f.y,f.r,0,Math.PI*2);x.fillStyle='rgba(255,255,255,.7)';x.fill();f.y+=f.vy;if(f.y>H+5)f.y=-5;});}
+function sl(){ds();requestAnimationFrame(sl);}rs();sl();window.addEventListener('resize',rs);
+
+function openSection(name){
+  document.getElementById('hero').style.display='none';
+  ['notebook','notes','facts'].forEach(s=>{document.getElementById('sec-'+s).style.display='none';});
+  document.getElementById('sec-'+name).style.display='block';
+  window.scrollTo(0,0);
+  if(name==='facts')loadFacts();
+}
+function backToHero(){
+  ['notebook','notes','facts'].forEach(s=>{document.getElementById('sec-'+s).style.display='none';});
+  document.getElementById('hero').style.display='flex';
+  window.scrollTo(0,0);
+}
+function jumpTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});}
+
+// FACTS DATA
+const facts=[
+  {n:1,cat:'science',text:'Global CO₂ is now ~418 ppm — 50% above pre-industrial levels of 280 ppm.'},
+  {n:2,cat:'science',text:'Earth has warmed +1.45°C since the pre-industrial era (1850–1900).'},
+  {n:3,cat:'science',text:'Methane is 80× more potent than CO₂ over a 20-year timeframe.'},
+  {n:4,cat:'science',text:'The Arctic is warming 4× faster than the global average.'},
+  {n:5,cat:'science',text:'Oceans have absorbed 90% of excess heat from climate change since 1971.'},
+  {n:6,cat:'science',text:'Ocean acidity increased 26% since the Industrial Revolution.'},
+  {n:7,cat:'science',text:'CO₂ lasts 300–1,000 years in the atmosphere once emitted.'},
+  {n:8,cat:'science',text:'The last time CO₂ was above 300 ppm was 3 million years ago — before humans.'},
+  {n:9,cat:'science',text:'Permafrost holds 1.5 trillion tonnes of carbon — twice current atmospheric CO₂.'},
+  {n:10,cat:'science',text:'Water vapor is the most abundant GHG but is a feedback, not a forcing.'},
+  {n:11,cat:'impact',text:'Sea levels are rising 3.7mm/year — 3× faster than in 1993.'},
+  {n:12,cat:'impact',text:'800 million people live in areas at risk of flooding from sea level rise by 2100.'},
+  {n:13,cat:'impact',text:'Heatwaves are now 5× more likely than they were 100 years ago.'},
+  {n:14,cat:'impact',text:'Wildfire seasons have extended by 3 months globally since 1979.'},
+  {n:15,cat:'impact',text:'1 million species face extinction, partly due to climate change.'},
+  {n:16,cat:'impact',text:'60% of wildlife populations have been lost since 1970.'},
+  {n:17,cat:'impact',text:'Coral reefs will largely disappear at 2°C of warming.'},
+  {n:18,cat:'impact',text:'Air pollution from fossil fuels causes 7 million premature deaths annually.'},
+  {n:19,cat:'impact',text:'Greenland lost 3.3 trillion tonnes of ice between 2002 and 2019.'},
+  {n:20,cat:'impact',text:'Climate change could push 130 million more people into extreme poverty by 2030.'},
+  {n:21,cat:'impact',text:'Economic losses from climate disasters exceeded $300 billion in 2023.'},
+  {n:22,cat:'impact',text:'216 million people could become climate migrants within their own countries by 2050.'},
+  {n:23,cat:'impact',text:'Food production could fall 25% by 2050 due to heat stress and drought.'},
+  {n:24,cat:'impact',text:'Rainfall intensity has increased by 40% in extreme events since 1980.'},
+  {n:25,cat:'impact',text:'The Amazon is approaching a tipping point — 17% already deforested.'},
+  {n:26,cat:'solution',text:'Solar electricity costs fell 90% between 2010 and 2023 — now the cheapest ever.'},
+  {n:27,cat:'solution',text:'1 MW of solar offsets ~1,500 tonnes of CO₂ annually.'},
+  {n:28,cat:'solution',text:'EVs emit 50–70% less CO₂ over their lifetime than petrol vehicles.'},
+  {n:29,cat:'solution',text:'Planting 1 trillion trees could sequester 205 Gt of CO₂.'},
+  {n:30,cat:'solution',text:'Battery storage costs fell 97% since 1991.'},
+  {n:31,cat:'solution',text:'Green hydrogen from renewables can decarbonize heavy industry and aviation.'},
+  {n:32,cat:'solution',text:'Sweden\'s $130/tonne carbon tax cut emissions 27% while economy grew 100%.'},
+  {n:33,cat:'solution',text:'Heat pumps are 3× more efficient than gas boilers at heating homes.'},
+  {n:34,cat:'solution',text:'Wind + solar could provide 90% of global electricity within 15 years technically.'},
+  {n:35,cat:'solution',text:'Regenerative agriculture sequesters carbon and improves soil and water quality.'},
+  {n:36,cat:'solution',text:'Sustainable aviation fuel (SAF) can cut aviation lifecycle emissions by 80%.'},
+  {n:37,cat:'solution',text:'High-speed rail can replace domestic flights on routes under 600km.'},
+  {n:38,cat:'solution',text:'Insulating homes reduces heating energy use by 40–60%.'},
+  {n:39,cat:'solution',text:'Plant-based diet saves ~1.5 tonnes of CO₂ per person per year.'},
+  {n:40,cat:'solution',text:'Direct Air Capture (DAC) technology can remove CO₂ directly from the atmosphere.'},
+  {n:41,cat:'country',text:'China emits 31% of global CO₂ but also installs more renewables than any other nation.'},
+  {n:42,cat:'country',text:'The USA\'s Inflation Reduction Act is the largest climate investment in history: $369 billion.'},
+  {n:43,cat:'country',text:'India targets 500 GW of renewable energy capacity by 2030.'},
+  {n:44,cat:'country',text:'Germany generated 56% of its electricity from renewables in 2023.'},
+  {n:45,cat:'country',text:'The EU Carbon Border Adjustment Mechanism now taxes high-carbon imports.'},
+  {n:46,cat:'country',text:'Brazil\'s Amazon absorbs 2 Gt of CO₂/year but deforestation threatens this.'},
+  {n:47,cat:'country',text:'Norway has 90% EV market share — the world\'s highest per capita.'},
+  {n:48,cat:'country',text:'Denmark gets 53% of electricity from wind — a world record.'},
+  {n:49,cat:'country',text:'Africa contributes less than 4% of global emissions but suffers disproportionate impacts.'},
+  {n:50,cat:'country',text:'140+ countries have made Net Zero pledges covering 90% of global GDP.'},
+];
+let currentFilter='all';
+function loadFacts(){renderFacts();}
+function filterFacts(cat,btn){
+  currentFilter=cat;
+  document.querySelectorAll('.ff').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFacts();
+}
+function renderFacts(){
+  const grid=document.getElementById('factsGrid');
+  const filtered=currentFilter==='all'?facts:facts.filter(f=>f.cat===currentFilter);
+  grid.innerHTML=filtered.map(f=>`
+    <div class="fact-card">
+      <div class="fact-num">FACT #${f.n}</div>
+      <div class="fact-text">${f.text}</div>
+      <span class="fact-cat fc-${f.cat}">${f.cat.toUpperCase()}</span>
+    </div>`).join('');
+}
+</script>
+</body>
+</html>

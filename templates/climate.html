@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Climate Dashboard | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='climate', user=user) }}
+
+<div class="dash">
+
+  <!-- ══ LEFT PANEL ══ -->
+  <div class="left">
+
+    <!-- STATS ROW -->
+    <div class="stats-row">
+      <div class="sbox"><div class="slbl">Simulations</div><div class="sval">{{ total_simulations }}</div></div>
+      <div class="sbox"><div class="slbl">Last Temp</div><div class="sval">{% if last_record %}+{{ last_record.temp }}°C{% else %}—{% endif %}</div></div>
+      <div class="sbox"><div class="slbl">Last Score</div><div class="sval">{% if last_record %}{{ last_record.score or '—' }}{% else %}—{% endif %}</div></div>
+    </div>
+
+    <!-- AI FORECAST -->
+    <div class="forecast-box">
+      <span class="fbox-tag">🤖 AGENT-6 FORECAST</span>
+      {{ ai_forecast }}
+    </div>
+
+    <div class="sec-title">⚡ Run Climate Simulation</div>
+
+    <div class="form-card">
+      <form method="POST" action="/predict" id="simForm">
+        <label>Country <span class="field-hint">Select your region</span></label>
+        <select name="country">
+          <option>India</option><option>USA</option><option>China</option>
+          <option>Germany</option><option>Brazil</option><option>Australia</option>
+          <option>UK</option><option>Japan</option><option>Russia</option>
+        </select>
+
+        {% set fields = [
+          ('emission',  'Carbon Emissions Index',  'e',  'Industrial + energy CO₂ output'),
+          ('energy',    'Energy Consumption Index', 'en', 'Power usage across all sectors'),
+          ('transport', 'Transport Usage Index',    't',  'Vehicle + aviation + shipping'),
+          ('industry',  'Industrial Activity Index','i',  'Manufacturing + production scale')
+        ] %}
+        {% for fname, flabel, fid, fhint in fields %}
+        <label>{{ flabel }} <span class="field-hint">{{ fhint }}</span>
+          <span class="lval" id="{{ fid }}-lbl">50</span>
+        </label>
+        <input type="range" name="{{ fname }}" id="{{ fid }}"
+          min="0" max="100" value="50"
+          oninput="updateSlider('{{ fid }}', this.value)">
+        <div class="preview-bar">
+          <div class="preview-dot" id="{{ fid }}-dot" style="left:50%"></div>
+        </div>
+        {% endfor %}
+
+        <!-- LIVE PREVIEW -->
+        <div class="live-preview" id="livePreview">
+          <span class="lp-label">Estimated temp rise:</span>
+          <span class="lp-val" id="previewTemp">~2.5°C</span>
+          <span class="lp-badge" id="previewImpact">Medium Impact</span>
+        </div>
+
+        <button type="submit" class="btn-run">⚡ EXECUTE AI ANALYSIS (9 AGENTS)</button>
+      </form>
+    </div>
+
+    <!-- PAST SIMULATIONS -->
+    {% if dates %}
+    <div class="sec-title">📅 Past Simulations</div>
+    {% for d in dates[:8] %}
+    <a href="/view/{{ d }}" class="hist-link">
+      <span class="hl-date">📅 {{ d }}</span>
+      <span class="hl-badge">VIEW</span>
+    </a>
+    {% endfor %}
+    {% if dates|length > 8 %}
+    <a href="/history" class="see-all-link">View all {{ dates|length }} simulations →</a>
+    {% endif %}
+    {% endif %}
+
+    {% if records %}
+    <div class="sec-title">📊 Results — {{ selected_date }}</div>
+    {% for r in records %}
+    <div class="result-mini">
+      <div class="rm-temp">+{{ r.temp }}°C</div>
+      <div class="rm-info">
+        <div>{{ r.impact }} · {{ r.country }}</div>
+        <div class="rm-sub">{{ r.summary[:80] }}...</div>
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- PAGE LINKS -->
+    <div class="page-links">
+      <div class="sec-title">🗺️ Explore Platform</div>
+      <div class="pl-grid">
+        <a href="/stories"    class="pl-btn">🎬 Stories</a>
+        <a href="/disaster"   class="pl-btn">☣ Disaster</a>
+        <a href="/behaviors"  class="pl-btn">🧠 Behavior</a>
+        <a href="/narrative"  class="pl-btn">🎞 Narrative</a>
+        <a href="/image"      class="pl-btn">🖼 Gallery</a>
+        <a href="/notebook"   class="pl-btn">📓 Notebook</a>
+        <a href="/history"    class="pl-btn">📊 History</a>
+        <a href="/leaderboard"class="pl-btn">🏆 Ranks</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <div class="right">
+
+    <!-- LIVE MONITORING -->
+    <div class="sec-title">🧬 Live AI Monitoring <span class="live-dot-label"><span class="live-dot"></span> LIVE</span></div>
+    <div class="live-grid">
+      <div class="lb" id="lb-co2">  <div class="lb-l">CO₂ PPM</div>   <div class="lb-v" id="lv-co2">—</div>   <div class="lb-s">Global avg</div></div>
+      <div class="lb" id="lb-temp"> <div class="lb-l">TEMP Δ</div>    <div class="lb-v" id="lv-temp">—</div>  <div class="lb-s">Since 1850</div></div>
+      <div class="lb" id="lb-sea">  <div class="lb-l">SEA RISE</div>  <div class="lb-v" id="lv-sea">—</div>   <div class="lb-s">mm / year</div></div>
+      <div class="lb" id="lb-ch4">  <div class="lb-l">METHANE</div>   <div class="lb-v" id="lv-ch4">—</div>   <div class="lb-s">ppb level</div></div>
+      <div class="lb" id="lb-risk"> <div class="lb-l">RISK IDX</div>  <div class="lb-v warn" id="lv-risk">—</div> <div class="lb-s">Climate risk</div></div>
+      <div class="lb" id="lb-conf"> <div class="lb-l">AI CONF</div>   <div class="lb-v" id="lv-conf">—</div>   <div class="lb-s">Accuracy</div></div>
+      <div class="lb" id="lb-ice">  <div class="lb-l">ARCTIC ICE</div><div class="lb-v danger" id="lv-ice">—</div><div class="lb-s">M km²</div></div>
+      <div class="lb" id="lb-def">  <div class="lb-l">DEFOREST</div>  <div class="lb-v danger" id="lv-def">—</div><div class="lb-s">Mha / year</div></div>
+      <div class="lb" id="lb-ren">  <div class="lb-l">RENEWABLES</div><div class="lb-v" id="lv-ren">—</div>  <div class="lb-s">% global energy</div></div>
+      <div class="lb" id="lb-ts">   <div class="lb-l">UPDATED</div>   <div class="lb-v small" id="lv-ts">—</div><div class="lb-s">Auto 3.5s</div></div>
+    </div>
+
+    <!-- TREND CHART -->
+    <div class="chart-card">
+      <div class="chart-hd">
+        <div class="sec-title" style="margin:0">📈 Live Temperature Trend</div>
+        <div class="chart-tabs">
+          <button class="ctab active" onclick="switchChart('temp',this)">Temp</button>
+          <button class="ctab" onclick="switchChart('co2',this)">CO₂</button>
+          <button class="ctab" onclick="switchChart('risk',this)">Risk</button>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="liveChart"></canvas></div>
+    </div>
+
+    <!-- HISTORY CHART -->
+    <div class="chart-card">
+      <div class="sec-title" style="margin-bottom:12px">📊 Your Simulation History</div>
+      <div class="chart-wrap"><canvas id="statsChart"></canvas></div>
+    </div>
+
+    <!-- AI CHAT -->
+    <div class="chat-panel">
+      <div class="chat-hd">
+        <div class="chat-dot"></div>
+        <div class="chat-title">CLIMATE AI AGENT — 60 TOPICS</div>
+        <div class="chat-sub">context-aware · agent-5</div>
+      </div>
+      <div class="chat-msgs" id="chatMsgs">
+        <div class="mai">🤖 Hello <strong>{{ user }}</strong>! I'm Climate AI Agent-5 with 60 climate topics loaded.<br><br>
+        Try: <em>co2, temperature, solar, flood, india, net zero, arctic, food, carbon tax, future</em><br><br>
+        Type <strong>help</strong> to see all 60 topics.</div>
+      </div>
+      <div class="quick-q">
+        <button class="qq" onclick="qask('co2 levels')">CO₂</button>
+        <button class="qq" onclick="qask('solar energy')">Solar</button>
+        <button class="qq" onclick="qask('flooding risk')">Flooding</button>
+        <button class="qq" onclick="qask('reduce emissions')">Reduce</button>
+        <button class="qq" onclick="qask('net zero')">Net Zero</button>
+        <button class="qq" onclick="qask('future of climate')">Future</button>
+        <button class="qq" onclick="qask('india climate')">India</button>
+        <button class="qq" onclick="qask('help')">Help</button>
+      </div>
+      <div class="chat-row">
+        <input class="ci" type="text" id="ci"
+          placeholder="Ask about CO₂, flooding, solar, India..."
+          onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="cs" onclick="sendChat()">ASK AI</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+:root{--g:#00ffe1;--bg:#020617;--card:rgba(11,18,32,.97);--low:#00ff88;--mid:#facc15;--high:#ff4d4d;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:Inter,sans-serif;color:white;min-height:100vh;overflow-x:hidden;
+  background-image:radial-gradient(circle at 15% 20%,rgba(0,255,225,.06),transparent 45%),
+  radial-gradient(circle at 85% 80%,rgba(0,188,212,.04),transparent 45%);}
+
+.dash{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 64px);}
+.left{padding:24px;border-right:1px solid rgba(0,255,225,.08);overflow-y:auto;background:rgba(2,6,23,.4);}
+.right{padding:24px;display:flex;flex-direction:column;gap:16px;overflow-y:auto;}
+
+.sec-title{font-family:Orbitron,sans-serif;font-size:.68rem;letter-spacing:3px;color:var(--g);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-title::after{content:"";flex:1;height:1px;background:linear-gradient(to right,rgba(0,255,225,.25),transparent);}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.sbox{background:rgba(0,255,225,.05);border:1px solid rgba(0,255,225,.12);border-radius:10px;padding:12px;text-align:center;}
+.slbl{font-size:.58rem;color:#64748b;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;}
+.sval{font-family:JetBrains Mono,monospace;font-size:1.1rem;color:var(--g);}
+
+/* FORECAST BOX */
+.forecast-box{background:rgba(0,255,225,.04);border:1px solid rgba(0,255,225,.15);border-radius:10px;
+  padding:12px 16px;font-size:.8rem;color:#7dd3fc;line-height:1.6;margin-bottom:16px;}
+.fbox-tag{display:block;font-family:Orbitron,sans-serif;font-size:.6rem;color:var(--g);letter-spacing:2px;margin-bottom:5px;}
+
+/* FORM */
+.form-card{background:var(--card);border:1px solid rgba(0,255,225,.1);border-radius:14px;padding:20px;margin-bottom:16px;}
+label{font-size:.68rem;color:#94a3b8;letter-spacing:1px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;margin-top:12px;}
+label:first-of-type{margin-top:0;}
+.field-hint{color:#475569;font-size:.6rem;letter-spacing:.5px;}
+.lval{font-family:JetBrains Mono,monospace;font-size:.88rem;color:var(--g);font-weight:700;}
+select{width:100%;padding:10px 13px;border-radius:9px;background:#020617;border:1px solid rgba(255,255,255,.08);color:white;font-family:inherit;margin-bottom:4px;outline:none;transition:.2s;}
+select:focus{border-color:var(--g);}
+input[type=range]{width:100%;-webkit-appearance:none;height:5px;background:rgba(0,255,225,.1);border-radius:3px;border:none;padding:0;cursor:pointer;outline:none;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--g);border-radius:50%;box-shadow:0 0 8px rgba(0,255,225,.4);}
+.preview-bar{height:3px;border-radius:2px;background:linear-gradient(to right,var(--low),var(--mid),var(--high));margin:3px 0 10px;position:relative;}
+.preview-dot{position:absolute;top:-4px;width:11px;height:11px;background:white;border:2px solid var(--bg);border-radius:50%;transform:translateX(-50%);transition:.15s;}
+
+/* LIVE PREVIEW */
+.live-preview{display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(0,255,225,.04);border:1px solid rgba(0,255,225,.1);border-radius:8px;margin-top:8px;font-size:.8rem;}
+.lp-label{color:#64748b;font-size:.7rem;letter-spacing:1px;}
+.lp-val{font-family:JetBrains Mono,monospace;font-size:1.1rem;color:var(--g);font-weight:700;}
+.lp-badge{padding:3px 9px;border-radius:20px;font-size:.62rem;font-family:Orbitron,sans-serif;background:rgba(250,204,21,.1);border:1px solid rgba(250,204,21,.25);color:#facc15;}
+
+.btn-run{width:100%;margin-top:16px;padding:14px;border:none;border-radius:12px;
+  background:linear-gradient(135deg,var(--g),#00bcd4);font-family:Orbitron,sans-serif;
+  font-weight:900;letter-spacing:2px;font-size:.72rem;cursor:pointer;color:#020617;transition:.3s;}
+.btn-run:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,255,225,.35);}
+
+/* HISTORY LINKS */
+.hist-link{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;
+  background:#020617;border:1px solid rgba(255,255,255,.05);border-radius:8px;text-decoration:none;
+  color:inherit;font-size:.78rem;transition:.2s;margin-bottom:5px;}
+.hist-link:hover{border-color:rgba(0,255,225,.3);background:rgba(0,255,225,.04);}
+.hl-date{font-family:JetBrains Mono,monospace;font-size:.74rem;color:#7dd3fc;}
+.hl-badge{padding:2px 8px;border-radius:4px;font-size:.58rem;font-family:Orbitron,sans-serif;background:rgba(0,255,225,.08);border:1px solid rgba(0,255,225,.2);color:var(--g);}
+.see-all-link{display:block;text-align:center;color:#64748b;font-size:.72rem;margin:8px 0 14px;text-decoration:none;transition:.2s;}
+.see-all-link:hover{color:var(--g);}
+
+/* RESULT MINI */
+.result-mini{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;background:#020617;border:1px solid rgba(255,255,255,.05);border-radius:8px;margin-bottom:6px;}
+.rm-temp{font-family:JetBrains Mono,monospace;font-size:1.1rem;color:var(--g);font-weight:700;flex-shrink:0;}
+.rm-info{font-size:.75rem;color:#7dd3fc;}
+.rm-sub{color:#475569;font-size:.7rem;margin-top:3px;line-height:1.4;}
+
+/* PAGE LINKS */
+.page-links{margin-top:16px;}
+.pl-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.pl-btn{padding:9px 12px;background:#020617;border:1px solid rgba(0,255,225,.1);border-radius:8px;
+  color:#94a3b8;font-size:.65rem;font-family:Orbitron,sans-serif;letter-spacing:1px;
+  text-decoration:none;transition:.2s;text-align:center;display:block;}
+.pl-btn:hover{border-color:var(--g);color:var(--g);background:rgba(0,255,225,.05);}
+
+/* LIVE MONITORING */
+.live-dot-label{display:flex;align-items:center;gap:5px;font-size:.6rem;color:var(--low);margin-left:auto;}
+.live-dot{width:7px;height:7px;background:var(--low);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.live-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:16px;}
+.lb{background:#020617;border:1px solid rgba(0,255,225,.08);border-radius:10px;padding:12px;text-align:center;
+  position:relative;overflow-x: hidden;transition:.2s;}
+.lb:hover{border-color:rgba(0,255,225,.2);}
+.lb::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--g);transform:scaleX(0);transition:.4s;transform-origin:left;}
+.lb.pulse::after{transform:scaleX(1);}
+.lb-l{font-size:.53rem;color:#64748b;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.lb-v{font-family:JetBrains Mono,monospace;font-size:.92rem;color:var(--g);transition:color .3s;}
+.lb-v.warn{color:var(--mid)!important;}
+.lb-v.danger{color:var(--high)!important;}
+.lb-v.small{font-size:.72rem;}
+.lb-s{font-size:.52rem;color:#475569;margin-top:3px;}
+
+/* CHARTS */
+.chart-card{background:var(--card);border:1px solid rgba(0,255,225,.1);border-radius:14px;padding:18px;}
+.chart-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.chart-wrap{position:relative;height:140px;}
+.chart-tabs{display:flex;gap:5px;}
+.ctab{padding:4px 11px;background:#020617;border:1px solid rgba(0,255,225,.1);border-radius:6px;
+  font-size:.58rem;font-family:Orbitron,sans-serif;letter-spacing:1px;color:#94a3b8;cursor:pointer;transition:.2s;}
+.ctab.active{background:rgba(0,255,225,.1);border-color:var(--g);color:var(--g);}
+
+/* AI CHAT */
+.chat-panel{background:var(--card);border:1px solid rgba(0,255,225,.15);border-radius:14px;overflow-x: hidden;display:flex;flex-direction:column;}
+.chat-hd{padding:11px 16px;border-bottom:1px solid rgba(0,255,225,.1);display:flex;align-items:center;gap:9px;background:rgba(0,255,225,.03);}
+.chat-dot{width:8px;height:8px;background:var(--low);border-radius:50%;animation:blink 1.5s infinite;}
+.chat-title{font-family:Orbitron,sans-serif;font-size:.7rem;letter-spacing:2px;color:var(--g);}
+.chat-sub{margin-left:auto;font-size:.6rem;color:#475569;}
+.chat-msgs{overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:160px;max-height:220px;scrollbar-width:thin;scrollbar-color:rgba(0,255,225,.2) transparent;}
+.mai{background:rgba(0,255,225,.05);border:1px solid rgba(0,255,225,.1);border-radius:0 10px 10px 10px;padding:9px 13px;font-size:.79rem;color:#cbd5e1;line-height:1.65;max-width:92%;align-self:flex-start;}
+.muser{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:10px 0 10px 10px;padding:9px 13px;font-size:.79rem;color:#93c5fd;align-self:flex-end;max-width:92%;}
+.quick-q{padding:7px 12px;display:flex;flex-wrap:wrap;gap:5px;border-top:1px solid rgba(0,255,225,.07);}
+.qq{padding:4px 9px;background:#020617;border:1px solid rgba(0,255,225,.12);border-radius:6px;
+  color:#94a3b8;font-family:Orbitron,sans-serif;font-size:.58rem;cursor:pointer;transition:.2s;letter-spacing:1px;}
+.qq:hover{border-color:var(--g);color:var(--g);}
+.chat-row{padding:9px 12px;border-top:1px solid rgba(0,255,225,.08);display:flex;gap:7px;}
+.ci{flex:1;background:#020617;border:1px solid rgba(0,255,225,.12);border-radius:8px;padding:9px 12px;
+  color:white;font-family:inherit;font-size:.82rem;outline:none;transition:.2s;}
+.ci:focus{border-color:var(--g);}
+.ci::placeholder{color:#475569;}
+.cs{padding:9px 16px;background:linear-gradient(135deg,var(--g),#00bcd4);border:none;border-radius:8px;
+  color:#020617;font-family:Orbitron,sans-serif;font-size:.6rem;letter-spacing:1px;cursor:pointer;white-space:nowrap;font-weight:700;}
+
+@media(max-width:1100px){.dash{grid-template-columns:340px 1fr;}}
+@media(max-width:860px){.dash{grid-template-columns:1fr;}.left{border-right:none;border-bottom:1px solid rgba(0,255,225,.08);}.live-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:500px){.live-grid{grid-template-columns:1fr 1fr;}.stats-row{grid-template-columns:1fr 1fr;}}
+</style>
+
+<script>
+// ── SLIDER UPDATE ──
+function updateSlider(id, val) {
+  document.getElementById(id+'-lbl').innerText = val;
+  document.getElementById(id+'-dot').style.left = val + '%';
+  updatePreview();
+}
+
+function updatePreview() {
+  const e  = +document.getElementById('e').value;
+  const en = +document.getElementById('en').value;
+  const t  = +document.getElementById('t').value;
+  const i  = +document.getElementById('i').value;
+  const score = (e*0.25)+(en*0.35)+(t*0.10)+(i*0.30);
+  const temp  = (0.5 + (score/100)*4.5).toFixed(2);
+  const pv    = document.getElementById('previewTemp');
+  const pi    = document.getElementById('previewImpact');
+  if(pv) pv.innerText = '~'+temp+'°C';
+  if(pi) {
+    if(temp < 1.5)      { pi.innerText='Safe Zone';pi.style.color='#00ff88'; }
+    else if(temp < 2.0) { pi.innerText='Low Impact';pi.style.color='#00ffe1'; }
+    else if(temp < 2.8) { pi.innerText='Medium Impact';pi.style.color='#facc15'; }
+    else if(temp < 3.5) { pi.innerText='High Impact';pi.style.color='#f97316'; }
+    else                { pi.innerText='Critical!';pi.style.color='#ff4d4d'; }
+  }
+}
+
+// ── LIVE DATA ──
+const chartBuffers = { temp:[], co2:[], risk:[], labels:[] };
+let chartMode = 'temp';
+
+const liveChart = new Chart(document.getElementById("liveChart"), {
+  type: "line",
+  data: { labels:[], datasets:[{
+    data:[], borderColor:"#00ffe1", tension:.4, fill:true,
+    backgroundColor:"rgba(0,255,225,.05)", pointRadius:2, borderWidth:2
+  }]},
+  options: {
+    responsive:true, maintainAspectRatio:false, animation:{duration:300},
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{display:false},
+      y:{ticks:{color:"#94a3b8",font:{size:10}},grid:{color:"rgba(255,255,255,.03)"}}
+    }
+  }
+});
+
+function switchChart(mode, el) {
+  chartMode = mode;
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const colors = {temp:'#00ffe1',co2:'#7dd3fc',risk:'#facc15'};
+  liveChart.data.labels = chartBuffers.labels.slice();
+  liveChart.data.datasets[0].data = chartBuffers[mode].slice();
+  liveChart.data.datasets[0].borderColor = colors[mode];
+  liveChart.update('none');
+}
+
+function pulseBox(id) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.remove('pulse');
+  void el.offsetWidth;
+  el.classList.add('pulse');
+}
+
+async function fetchLive() {
+  try {
+    const r = await fetch("/api/live");
+    const d = await r.json();
+    const set = (id, val) => { const el=document.getElementById(id); if(el) el.innerText=val; };
+    set('lv-co2',  d.co2+' ppm');
+    set('lv-temp', '+'+d.temp+'°C');
+    set('lv-sea',  d.sea_level);
+    set('lv-ch4',  d.methane);
+    set('lv-risk', d.risk_index+'%');
+    set('lv-conf', d.confidence+'%');
+    set('lv-ice',  d.arctic_ice+' M');
+    set('lv-def',  d.deforestation);
+    set('lv-ren',  d.renewables_pct+'%');
+    set('lv-ts',   d.timestamp);
+    ['lb-co2','lb-temp','lb-sea','lb-ch4','lb-risk','lb-conf','lb-ice','lb-def','lb-ren'].forEach(pulseBox);
+
+    const now = new Date().toLocaleTimeString();
+    chartBuffers.labels.push(now);
+    chartBuffers.temp.push(d.temp);
+    chartBuffers.co2.push(d.co2);
+    chartBuffers.risk.push(d.risk_index);
+    if(chartBuffers.labels.length > 20) {
+      ['labels','temp','co2','risk'].forEach(k => chartBuffers[k].shift());
+    }
+    const colors = {temp:'#00ffe1',co2:'#7dd3fc',risk:'#facc15'};
+    liveChart.data.labels = chartBuffers.labels.slice();
+    liveChart.data.datasets[0].data = chartBuffers[chartMode].slice();
+    liveChart.data.datasets[0].borderColor = colors[chartMode];
+    liveChart.update('none');
+  } catch(e) {}
+}
+setInterval(fetchLive, 3500);
+fetchLive();
+
+// ── HISTORY CHART ──
+async function loadStats() {
+  try {
+    const r = await fetch("/api/stats");
+    const d = await r.json();
+    if(!d.length) return;
+    new Chart(document.getElementById("statsChart"), {
+      type:"bar",
+      data:{
+        labels: d.map(x=>x.date),
+        datasets:[
+          {label:"Avg Temp",data:d.map(x=>x.avg_temp),backgroundColor:"rgba(0,255,225,.25)",borderColor:"#00ffe1",borderWidth:1.5},
+          {label:"Max Temp",data:d.map(x=>x.max_temp),backgroundColor:"rgba(255,77,77,.2)",borderColor:"#ff4d4d",borderWidth:1.5}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false, animation:{duration:600},
+        plugins:{legend:{labels:{color:"#94a3b8",font:{size:9}}}},
+        scales:{
+          x:{ticks:{color:"#64748b",font:{size:9}},grid:{display:false}},
+          y:{ticks:{color:"#94a3b8",font:{size:9}},grid:{color:"rgba(255,255,255,.03)"}}
+        }
+      }
+    });
+  } catch(e) {}
+}
+loadStats();
+
+// ── AI CHAT ──
+async function sendChat() {
+  const inp = document.getElementById("ci");
+  const msg = inp.value.trim();
+  if(!msg) return;
+  inp.value = "";
+  const box = document.getElementById("chatMsgs");
+  box.innerHTML += `<div class="muser">${msg}</div>`;
+  box.scrollTop = box.scrollHeight;
+  try {
+    const r = await fetch("/api/chat",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({message:msg})
+    });
+    const d = await r.json();
+    box.innerHTML += `<div class="mai">${d.reply}</div>`;
+  } catch(e) {
+    box.innerHTML += `<div class="mai">⚠️ Agent temporarily offline. Please try again.</div>`;
+  }
+  box.scrollTop = box.scrollHeight;
+}
+function qask(q) { document.getElementById("ci").value = q; sendChat(); }
+</script>
+</body>
+</html>
