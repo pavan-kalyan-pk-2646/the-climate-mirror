@@ -1,3 +1,4 @@
+
 # 🌍 The Climate Mirror — v2 (Refactored)
 
 An agentic AI climate intelligence platform that analyses personal/national climate
@@ -132,17 +133,3 @@ def test_high_emission():
     result = analyze(90, 50, 30, 40, 3.2, "India")
     assert result["severity"] in ("High", "Critical")
     assert result["dominant"]["name"] == "Energy Use"  # energy has highest weighted value
-```
-
----
-
-## 📈 Next Improvements (Roadmap)
-
-- [ ] Replace rule-based chat with real LLM API (OpenAI / HuggingFace)
-- [ ] Add Chart.js / Recharts for trend visualisations on dashboard
-- [ ] CDN for static video/image assets (AWS CloudFront / Cloudflare)
-- [ ] Lazy-load videos with `loading="lazy"` + `IntersectionObserver`
-- [ ] Step-based UI progress bar (Intro → Input → Analysis → Results → Actions)
-- [ ] Social comparison: "You're in the top 23% of users in India"
-- [ ] Personal dashboard with climate score history chart
-- [ ] Map-based disaster risk visualisation
