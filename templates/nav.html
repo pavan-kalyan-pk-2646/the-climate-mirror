@@ -1,0 +1,138 @@
+{% macro navbar(active='', user='') %}
+<nav class="cm-nav" id="cmNav">
+
+  <a class="cm-logo" href="{% if user %}/stories{% else %}/home{% endif %}">
+    <span class="cm-logo-icon">🌍</span>
+    <span class="cm-logo-txt">CLIMATE<em>MIRROR</em></span>
+  </a>
+
+  <div class="cm-links" id="cmLinks">
+    {% if user %}
+      <a href="/climate"    {% if active=='climate'    %}class="active"{% endif %}>⚡ SIMULATE</a>
+      <a href="/stories"    {% if active=='stories'    %}class="active"{% endif %}>🎬 STORIES</a>
+      <a href="/narrative"  {% if active=='narrative'  %}class="active"{% endif %}>🎞 NARRATIVE</a>
+      <a href="/disaster"   {% if active=='disaster'   %}class="active"{% endif %}>☣ DISASTER</a>
+      <a href="/behaviors"  {% if active=='behaviors'  %}class="active"{% endif %}>🧠 BEHAVIOR</a>
+      <a href="/image"      {% if active=='image'      %}class="active"{% endif %}>🖼 GALLERY</a>
+      <a href="/notebook"   {% if active=='notebook'   %}class="active"{% endif %}>📓 NOTEBOOK</a>
+      <a href="/history"    {% if active=='history'    %}class="active"{% endif %}>📊 HISTORY</a>
+      <a href="/leaderboard"{% if active=='leaderboard'%}class="active"{% endif %}>🏆 RANKS</a>
+    {% else %}
+      <a href="/home"     {% if active=='home'     %}class="active"{% endif %}>🏠 HOME</a>
+      <a href="/login"    {% if active=='login'    %}class="active"{% endif %}>🔐 LOGIN</a>
+      <a href="/register" {% if active=='register' %}class="active"{% endif %}>📝 REGISTER</a>
+    {% endif %}
+  </div>
+
+  <div class="cm-right">
+    {% if user %}
+      <span class="cm-badge">{{ user }}</span>
+      <a href="/logout" class="cm-logout">LOGOUT</a>
+    {% else %}
+      <a href="/login"    class="cm-cta">LOGIN</a>
+    {% endif %}
+    <button class="cm-burger" onclick="document.getElementById('cmLinks').classList.toggle('open')" aria-label="Menu">☰</button>
+  </div>
+
+</nav>
+
+<style>
+/* ── Reset nav conflicts ── */
+body { padding-top: 64px !important; }
+body.no-pad { padding-top: 0 !important; }
+
+/* ── Nav base ── */
+.cm-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 99999;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(2,6,23,0.96);
+  backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid rgba(0,255,225,0.15);
+  box-shadow: 0 2px 30px rgba(0,0,0,0.6);
+  font-family: 'Orbitron', 'Audiowide', monospace, sans-serif;
+}
+
+/* ── Logo ── */
+.cm-logo {
+  display: flex; align-items: center; gap: 9px;
+  text-decoration: none; flex-shrink: 0;
+}
+.cm-logo-icon { font-size: 20px; }
+.cm-logo-txt {
+  font-size: 0.85rem; font-weight: 700; letter-spacing: 3px; color: #00ffe1;
+}
+.cm-logo-txt em { font-style: normal; color: #7dd3fc; }
+
+/* ── Links ── */
+.cm-links {
+  display: flex; align-items: center; gap: 2px;
+  overflow-x: auto; flex: 1; justify-content: center;
+  scrollbar-width: none;
+}
+.cm-links::-webkit-scrollbar { display: none; }
+.cm-links a {
+  padding: 6px 10px; border-radius: 7px;
+  font-size: 0.58rem; letter-spacing: 1.5px;
+  color: #94a3b8; text-decoration: none;
+  transition: all 0.2s; border: 1px solid transparent;
+  white-space: nowrap; flex-shrink: 0;
+}
+.cm-links a:hover {
+  color: #00ffe1;
+  background: rgba(0,255,225,0.07);
+  border-color: rgba(0,255,225,0.2);
+}
+.cm-links a.active {
+  color: #00ffe1;
+  background: rgba(0,255,225,0.12);
+  border-color: rgba(0,255,225,0.35);
+}
+
+/* ── Right side ── */
+.cm-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.cm-badge {
+  padding: 4px 11px; border-radius: 20px;
+  background: rgba(0,255,225,0.08); border: 1px solid rgba(0,255,225,0.25);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #00ffe1;
+}
+.cm-logout {
+  padding: 5px 11px; border-radius: 6px;
+  border: 1px solid rgba(255,77,77,0.35); color: #ff7070;
+  font-size: 0.55rem; letter-spacing: 1.5px; text-decoration: none; transition: 0.2s;
+}
+.cm-logout:hover { background: rgba(255,77,77,0.12); border-color: #ff4d4d; }
+.cm-cta {
+  padding: 6px 14px; border-radius: 8px;
+  background: linear-gradient(135deg, #00ffe1, #00bcd4);
+  color: #020617; font-size: 0.6rem; letter-spacing: 2px;
+  text-decoration: none; font-weight: 700;
+}
+.cm-burger {
+  display: none; background: none; border: 1px solid rgba(0,255,225,0.2);
+  color: #00ffe1; font-size: 1rem; cursor: pointer;
+  padding: 5px 9px; border-radius: 6px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 960px) {
+  .cm-links {
+    display: none;
+    position: fixed; top: 64px; left: 0; right: 0;
+    flex-direction: column; justify-content: flex-start;
+    background: rgba(2,6,23,0.99); backdrop-filter: blur(20px);
+    padding: 12px 16px 20px; border-bottom: 1px solid rgba(0,255,225,0.12);
+    gap: 4px; z-index: 99998; overflow-x: visible;
+  }
+  .cm-links.open { display: flex; }
+  .cm-links a { width: 100%; text-align: left; padding: 11px 16px; font-size: 0.7rem; }
+  .cm-burger { display: block; }
+  .cm-badge { display: none; }
+  .cm-logo-txt { font-size: 0.75rem; }
+}
+@media (max-width: 480px) {
+  .cm-nav { padding: 0 14px; }
+}
+</style>
+{% endmacro %}

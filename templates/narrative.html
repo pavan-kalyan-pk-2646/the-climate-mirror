@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Human Actions & Climate | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='narrative', user=user) }}
+
+<!-- ░░░ LAYERS ░░░ -->
+<canvas id="bgCanvas"></canvas>
+<div class="plasma-layer"></div>
+<div class="grid-layer"></div>
+<div class="scan-line"></div>
+
+<!-- ░░░ HERO ░░░ -->
+<section class="hero">
+  <div class="hero-pre">[ AI CLIMATE INTELLIGENCE · BEHAVIOR ANALYSIS · 2026 ]</div>
+  <h1 class="hero-title" id="heroTitle">
+    <span class="glitch" data-text="HUMAN ACTIONS">HUMAN ACTIONS</span>
+    <br>
+    <span class="glitch gradient-text" data-text="& CLIMATE">&amp; CLIMATE</span>
+  </h1>
+  <p class="hero-sub">Every action you take leaves an invisible mark on Earth's atmosphere.<br>
+  The AI has recorded them all. Scroll to witness the evidence.</p>
+  <div class="hero-stats">
+    <div class="hstat"><div class="hstat-n" id="hco2">418.4</div><div class="hstat-l">CO₂ PPM</div></div>
+    <div class="hstat-div"></div>
+    <div class="hstat"><div class="hstat-n danger" id="htemp">+1.45°C</div><div class="hstat-l">GLOBAL RISE</div></div>
+    <div class="hstat-div"></div>
+    <div class="hstat"><div class="hstat-n warn">8</div><div class="hstat-l">CAUSES BELOW</div></div>
+    <div class="hstat-div"></div>
+    <div class="hstat"><div class="hstat-n" id="hrisk">79%</div><div class="hstat-l">RISK INDEX</div></div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-arrow"></div>
+    <span>SCROLL TO WITNESS</span>
+  </div>
+</section>
+
+<!-- ░░░ CARDS GRID ░░░ -->
+<section class="cards-section">
+  <div class="cards-grid" id="grid"></div>
+</section>
+
+
+<!-- ░░░ FOOTER ░░░ -->
+<section class="footer-section">
+  <div class="footer-inner">
+    <div class="footer-glow-text">THE CLIMATE MIRROR</div>
+    <p class="footer-sub">The planet reflects our choices. The AI has documented them all.</p>
+    <div class="footer-cta">
+      {% if user %}
+      <a href="/climate" class="cta-btn cta-primary">⚡ RUN AI SIMULATION</a>
+      <a href="/disaster" class="cta-btn cta-danger">☣ DISASTER ROOM</a>
+      {% else %}
+      <a href="/login" class="cta-btn cta-primary">🔐 LOGIN TO SIMULATE</a>
+      <a href="/register" class="cta-btn cta-outline">📝 CREATE ACCOUNT</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ░░░ BOTTOM NAV ░░░ -->
+<div class="bottom-nav">
+  <div class="bn-label">EXPLORE PLATFORM</div>
+  <div class="bn-links">
+    {% if user %}
+    <a href="/climate"    class="bn">⚡ SIMULATE</a>
+    <a href="/stories"    class="bn">🎬 STORIES</a>
+    <a href="/disaster"   class="bn">☣ DISASTER</a>
+    <a href="/behaviors"  class="bn">🧠 BEHAVIOR</a>
+    <a href="/image"      class="bn">🖼 GALLERY</a>
+    <a href="/notebook"   class="bn">📓 NOTEBOOK</a>
+    <a href="/history"    class="bn">📊 HISTORY</a>
+    <a href="/leaderboard"class="bn">🏆 RANKS</a>
+    {% else %}
+    <a href="/home"      class="bn">🏠 HOME</a>
+    <a href="/login"     class="bn">🔐 LOGIN</a>
+    <a href="/register"  class="bn">📝 REGISTER</a>
+    <a href="/image"     class="bn">🖼 GALLERY</a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ░░░ MEGA MODAL ░░░ -->
+<div class="mega-modal" id="modal">
+  <div class="modal-bg-effect"></div>
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <div class="modal-inner">
+    <div class="modal-vid-wrap">
+      <video id="modalVideo" controls autoplay playsinline></video>
+      <div class="modal-vid-overlay"></div>
+      <div class="modal-vid-corner tl"></div>
+      <div class="modal-vid-corner tr"></div>
+      <div class="modal-vid-corner bl"></div>
+      <div class="modal-vid-corner br"></div>
+    </div>
+    <div class="modal-info">
+      <div class="modal-tag" id="modalTag">IMPACT ANALYSIS</div>
+      <h2 id="modalTitle" class="modal-title"></h2>
+      <p id="modalDesc" class="modal-desc"></p>
+      <div class="modal-meter">
+        <div class="mm-label">CLIMATE IMPACT SEVERITY</div>
+        <div class="mm-track"><div class="mm-fill" id="mmFill"></div></div>
+        <div class="mm-pct" id="mmPct">0%</div>
+      </div>
+      <div class="modal-tags" id="modalTags"></div>
+      <div class="modal-actions">
+        {% if user %}
+        <a href="/climate" class="ma-btn">⚡ SIMULATE THIS SCENARIO</a>
+        <a href="/disaster" class="ma-ghost">☣ VIEW DISASTER RISKS</a>
+        {% else %}
+        <a href="/login" class="ma-btn">🔐 LOGIN TO ANALYZE</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* ══════════════════════════════════════════════
+   RESET + ROOT
+══════════════════════════════════════════════ */
+:root {
+  --neon:   #00ffe1;
+  --red:    #ff003c;
+  --gold:   #ffd700;
+  --blue:   #7dd3fc;
+  --purple: #a855f7;
+  --bg:     #000308;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: #e6f4ff;
+  font-family: Inter, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════════════
+   BACKGROUND LAYERS
+══════════════════════════════════════════════ */
+#bgCanvas {
+  position: fixed; inset: 0; z-index: -3;
+  pointer-events: none;
+}
+.plasma-layer {
+  position: fixed; inset: -50%; z-index: -2;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(0,255,225,.08), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 70%, rgba(168,85,247,.06), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(255,0,60,.04), transparent 55%);
+  animation: plasmaMove 30s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes plasmaMove {
+  0%   { transform: translate(0,0) scale(1); }
+  33%  { transform: translate(40px,-30px) scale(1.05); }
+  66%  { transform: translate(-30px,40px) scale(.95); }
+  100% { transform: translate(20px,-20px) scale(1.02); }
+}
+.grid-layer {
+  position: fixed; inset: 0; z-index: -1;
+  background-image:
+    linear-gradient(rgba(0,255,225,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,225,.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 100% 100% at center, black 40%, transparent 80%);
+}
+.scan-line {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 9990;
+  background: linear-gradient(90deg, transparent, var(--neon), transparent);
+  opacity: .3;
+  animation: scanMove 6s linear infinite;
+  pointer-events: none;
+}
+@keyframes scanMove { from {top:0%} to {top:100%} }
+
+/* ══════════════════════════════════════════════
+   GLITCH EFFECT
+══════════════════════════════════════════════ */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: transparent;
+}
+.glitch::before {
+  color: #ff003c;
+  animation: glitch1 4s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  transform: translate(-3px, 0);
+}
+.glitch::after {
+  color: #00ffe1;
+  animation: glitch2 4s infinite;
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+  transform: translate(3px, 0);
+}
+@keyframes glitch1 {
+  0%,94%,100% { transform: translate(0,0); opacity:0; }
+  95% { transform: translate(-4px, 2px); opacity:.8; }
+  97% { transform: translate(2px,-2px); opacity:.8; }
+  99% { transform: translate(-2px,1px); opacity:.8; }
+}
+@keyframes glitch2 {
+  0%,92%,100% { transform: translate(0,0); opacity:0; }
+  93% { transform: translate(4px,-2px); opacity:.8; }
+  96% { transform: translate(-2px,2px); opacity:.8; }
+  98% { transform: translate(3px,0); opacity:.8; }
+}
+.gradient-text {
+  background: linear-gradient(90deg, #00ffe1, #7dd3fc, #a855f7, #ff003c);
+  background-size: 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradMove 4s linear infinite;
+}
+@keyframes gradMove { from{background-position:0%} to{background-position:300%} }
+
+/* ══════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 80px 24px 60px;
+  position: relative;
+}
+.hero-pre {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .65rem; letter-spacing: 4px;
+  color: rgba(0,255,225,.5);
+  border: 1px solid rgba(0,255,225,.15);
+  padding: 7px 20px; border-radius: 20px;
+  background: rgba(0,255,225,.04);
+  margin-bottom: 28px;
+  animation: fadeInDown .8s ease forwards;
+}
+.hero-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 4px;
+  margin-bottom: 24px;
+  animation: fadeInDown 1s .2s ease both;
+}
+.hero-sub {
+  max-width: 700px;
+  font-size: 1.05rem;
+  color: #94a3b8;
+  line-height: 1.8;
+  margin-bottom: 40px;
+  animation: fadeInDown 1s .4s ease both;
+}
+
+/* HERO STATS */
+.hero-stats {
+  display: flex; align-items: center; gap: 0;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(0,255,225,.15);
+  border-radius: 60px;
+  padding: 16px 32px;
+  backdrop-filter: blur(20px);
+  margin-bottom: 48px;
+  animation: fadeInDown 1s .6s ease both;
+  flex-wrap: wrap; justify-content: center;
+}
+.hstat { text-align: center; padding: 0 22px; }
+.hstat-n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--neon);
+}
+.hstat-n.danger { color: #ff4d4d; }
+.hstat-n.warn   { color: #facc15; }
+.hstat-l { font-size: .58rem; color: #64748b; letter-spacing: 2px; margin-top: 3px; }
+.hstat-div { width: 1px; height: 36px; background: rgba(0,255,225,.15); }
+
+/* SCROLL HINT */
+.scroll-hint {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  color: rgba(0,255,225,.4); font-size: .62rem; letter-spacing: 3px;
+  animation: fadeIn 2s 1.5s ease both;
+}
+.scroll-arrow {
+  width: 20px; height: 20px;
+  border-right: 2px solid rgba(0,255,225,.4);
+  border-bottom: 2px solid rgba(0,255,225,.4);
+  transform: rotate(45deg);
+  animation: bounceArrow 1.5s ease infinite;
+}
+@keyframes bounceArrow {
+  0%,100% { transform: rotate(45deg) translate(0,0); opacity:.4; }
+  50%      { transform: rotate(45deg) translate(4px,4px); opacity:1; }
+}
+@keyframes fadeInDown {
+  from { opacity:0; transform: translateY(-20px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity:0; } to { opacity:1; }
+}
+
+/* ══════════════════════════════════════════════
+   CARDS SECTION
+══════════════════════════════════════════════ */
+.cards-section {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 30px 100px;
+}
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 60px 50px;
+}
+
+/* 3D PERSPECTIVE CARD */
+.card {
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform .1s ease;
+  background: rgba(10,18,32,.8);
+  border: 1px solid rgba(0,255,225,.15);
+  box-shadow: 0 30px 80px rgba(0,0,0,.7);
+}
+.card::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255,255,255,.06) 50%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity .3s;
+  pointer-events: none;
+}
+.card:hover::before { opacity: 1; }
+
+/* CARD CORNER BORDERS */
+.card::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 3;
+  border-radius: 28px;
+  background:
+    linear-gradient(var(--neon), var(--neon)) top left / 20px 2px no-repeat,
+    linear-gradient(var(--neon), var(--neon)) top left / 2px 20px no-repeat,
+    linear-gradient(var(--neon), var(--neon)) top right / 20px 2px no-repeat,
+    linear-gradient(var(--neon), var(--neon)) top right / 2px 20px no-repeat,
+    linear-gradient(var(--neon), var(--neon)) bottom left / 20px 2px no-repeat,
+    linear-gradient(var(--neon), var(--neon)) bottom left / 2px 20px no-repeat,
+    linear-gradient(var(--neon), var(--neon)) bottom right / 20px 2px no-repeat,
+    linear-gradient(var(--neon), var(--neon)) bottom right / 2px 20px no-repeat;
+  opacity: 0;
+  transition: opacity .4s;
+  pointer-events: none;
+}
+.card:hover::after { opacity: 1; }
+
+/* VIDEO BOX */
+.video-box {
+  position: relative;
+  height: 380px;
+  overflow: hidden;
+}
+.video-box::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,.9));
+  z-index: 1; pointer-events: none;
+}
+.video-box video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 1s ease;
+  filter: saturate(1.2) contrast(1.05);
+}
+.card:hover .video-box video { transform: scale(1.12); }
+
+/* CARD NUMBER */
+.card-num {
+  position: absolute; top: 18px; right: 20px; z-index: 4;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem; font-weight: 900;
+  color: rgba(0,255,225,.08);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* CARD BADGE */
+.card-badge {
+  position: absolute; top: 18px; left: 18px; z-index: 4;
+  padding: 5px 12px; border-radius: 20px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: .55rem; letter-spacing: 2px;
+  border: 1px solid currentColor;
+}
+.badge-red    { color: #ff4d4d; background: rgba(255,77,77,.12); border-color: rgba(255,77,77,.4); }
+.badge-orange { color: #f97316; background: rgba(249,115,22,.1); border-color: rgba(249,115,22,.35); }
+.badge-yellow { color: #facc15; background: rgba(250,204,21,.1); border-color: rgba(250,204,21,.3); }
+.badge-neon   { color: var(--neon); background: rgba(0,255,225,.08); border-color: rgba(0,255,225,.3); }
+
+/* CARD CONTENT */
+.card-content {
+  position: relative; z-index: 2;
+  padding: 28px 32px 32px;
+}
+.card-content h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem; letter-spacing: 3px;
+  color: white; margin-bottom: 10px;
+}
+.card-content p {
+  font-size: .88rem; color: #94a3b8;
+  line-height: 1.75; margin-bottom: 14px;
+}
+/* IMPACT BAR */
+.impact-bar-wrap {
+  display: flex; align-items: center; gap: 10px; margin-top: 12px;
+}
+.impact-label { font-size: .6rem; color: #64748b; letter-spacing: 1px; white-space: nowrap; }
+.impact-track {
+  flex: 1; height: 4px; border-radius: 2px;
+  background: rgba(255,255,255,.06); overflow: hidden;
+}
+.impact-fill {
+  height: 100%; border-radius: 2px;
+  transition: width 1.5s ease;
+}
+.impact-pct { font-family: 'JetBrains Mono', monospace; font-size: .72rem; min-width: 36px; }
+
+
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+.footer-section {
+  text-align: center;
+  padding: 100px 24px 80px;
+  position: relative; overflow: hidden;
+}
+.footer-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,255,225,.05), transparent 70%);
+  pointer-events: none;
+}
+.footer-glow-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 900; letter-spacing: 10px;
+  background: linear-gradient(90deg, #fff, var(--neon), #fff);
+  background-size: 200%;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimGold 5s linear infinite;
+  margin-bottom: 16px;
+  text-shadow: none;
+}
+@keyframes shimGold { from{background-position:0%} to{background-position:200%} }
+.footer-sub {
+  font-size: 1rem; color: #64748b; margin-bottom: 36px;
+  letter-spacing: 1px; max-width: 600px; margin-inline: auto;
+}
+.footer-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
+.cta-btn {
+  padding: 16px 36px; border-radius: 50px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: .72rem; letter-spacing: 3px;
+  text-decoration: none; transition: .35s;
+  display: inline-block;
+}
+.cta-primary {
+  background: linear-gradient(135deg, var(--neon), #00bcd4);
+  color: #020617; font-weight: 700;
+  box-shadow: 0 8px 30px rgba(0,255,225,.3);
+}
+.cta-primary:hover { transform: translateY(-4px); box-shadow: 0 16px 50px rgba(0,255,225,.5); }
+.cta-danger {
+  background: linear-gradient(135deg, #ff003c, #ff4d4d);
+  color: white; font-weight: 700;
+  box-shadow: 0 8px 30px rgba(255,0,60,.3);
+}
+.cta-danger:hover { transform: translateY(-4px); box-shadow: 0 16px 50px rgba(255,0,60,.5); }
+.cta-outline {
+  background: transparent;
+  border: 2px solid rgba(0,255,225,.4); color: var(--neon);
+}
+.cta-outline:hover { background: rgba(0,255,225,.08); }
+
+/* ══════════════════════════════════════════════
+   BOTTOM NAV
+══════════════════════════════════════════════ */
+.bottom-nav {
+  text-align: center;
+  padding: 40px 24px 60px;
+  border-top: 1px solid rgba(0,255,225,.1);
+}
+.bn-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .6rem; color: rgba(0,255,225,.3);
+  letter-spacing: 5px; margin-bottom: 18px;
+}
+.bn-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+.bn {
+  padding: 10px 18px; border-radius: 9px;
+  border: 1px solid rgba(0,255,225,.15);
+  color: #94a3b8;
+  font-family: 'Orbitron', sans-serif;
+  font-size: .58rem; letter-spacing: 2px;
+  text-decoration: none; transition: .25s;
+}
+.bn:hover {
+  border-color: var(--neon); color: var(--neon);
+  background: rgba(0,255,225,.06);
+  transform: translateY(-2px);
+}
+
+/* ══════════════════════════════════════════════
+   MEGA MODAL
+══════════════════════════════════════════════ */
+.mega-modal {
+  position: fixed; inset: 0; z-index: 99999;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.mega-modal.active { display: flex; }
+.modal-bg-effect {
+  position: absolute; inset: 0;
+  background: rgba(0,3,8,.96);
+  backdrop-filter: blur(20px) saturate(1.5);
+}
+.modal-close {
+  position: fixed; top: 22px; right: 28px; z-index: 2;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.2);
+  color: white; font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: .25s;
+}
+.modal-close:hover { background: rgba(255,0,60,.15); border-color: #ff4d4d; color: #ff7070; }
+.modal-inner {
+  position: relative; z-index: 1;
+  max-width: 1200px; width: 100%;
+  display: grid; grid-template-columns: 1.4fr 1fr; gap: 44px;
+  background: rgba(8,15,30,.95);
+  border: 1px solid rgba(0,255,225,.2);
+  border-radius: 28px; padding: 40px;
+  box-shadow: 0 0 120px rgba(0,255,225,.15);
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-vid-wrap {
+  position: relative; border-radius: 20px; overflow: hidden;
+}
+.modal-vid-wrap video {
+  width: 100%; height: 420px; object-fit: cover; display: block;
+}
+.modal-vid-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,.6));
+  pointer-events: none;
+}
+/* CORNER BRACKETS */
+.modal-vid-corner {
+  position: absolute; width: 22px; height: 22px; z-index: 2;
+}
+.modal-vid-corner.tl { top:8px; left:8px; border-top:3px solid var(--neon); border-left:3px solid var(--neon); }
+.modal-vid-corner.tr { top:8px; right:8px; border-top:3px solid var(--neon); border-right:3px solid var(--neon); }
+.modal-vid-corner.bl { bottom:8px; left:8px; border-bottom:3px solid var(--neon); border-left:3px solid var(--neon); }
+.modal-vid-corner.br { bottom:8px; right:8px; border-bottom:3px solid var(--neon); border-right:3px solid var(--neon); }
+
+.modal-tag {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .6rem; letter-spacing: 3px; color: var(--neon);
+  border: 1px solid rgba(0,255,225,.3);
+  display: inline-block; padding: 4px 12px; border-radius: 20px;
+  background: rgba(0,255,225,.07); margin-bottom: 14px;
+}
+.modal-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.5rem);
+  letter-spacing: 3px; color: white;
+  margin-bottom: 16px; line-height: 1.3;
+}
+.modal-desc {
+  font-size: .88rem; color: #94a3b8;
+  line-height: 1.85; margin-bottom: 20px;
+}
+.modal-meter { margin-bottom: 18px; }
+.mm-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .58rem; letter-spacing: 2px; color: #64748b; margin-bottom: 8px;
+}
+.mm-track {
+  height: 8px; background: rgba(255,255,255,.06);
+  border-radius: 4px; overflow: hidden; margin-bottom: 5px;
+}
+.mm-fill {
+  height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, var(--neon), #f97316, #ff003c);
+  transition: width 1.2s ease; width: 0%;
+}
+.mm-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem; color: var(--neon); text-align: right;
+}
+.modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.mtag {
+  padding: 4px 11px; border-radius: 20px;
+  font-size: .6rem; letter-spacing: 1px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  color: #94a3b8;
+}
+.modal-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.ma-btn {
+  padding: 12px 22px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--neon), #00bcd4);
+  color: #020617; font-family: 'Orbitron', sans-serif;
+  font-size: .62rem; letter-spacing: 2px;
+  font-weight: 700; text-decoration: none; transition: .25s;
+}
+.ma-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,255,225,.3); }
+.ma-ghost {
+  padding: 12px 22px; border-radius: 8px;
+  background: transparent;
+  border: 1px solid rgba(255,77,77,.4); color: #ff9090;
+  font-family: 'Orbitron', sans-serif;
+  font-size: .62rem; letter-spacing: 2px;
+  text-decoration: none; transition: .25s;
+}
+.ma-ghost:hover { background: rgba(255,0,60,.1); }
+
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 1000px) {
+  .cards-grid { grid-template-columns: 1fr; gap: 36px; }
+  .modal-inner { grid-template-columns: 1fr; }
+  .modal-vid-wrap video { height: 240px; }
+}
+@media (max-width: 600px) {
+  .hero-stats { gap: 0; padding: 12px 16px; }
+  .hstat { padding: 0 12px; }
+  .hstat-div { display: none; }
+  .cards-section { padding: 0 16px 60px; }
+  .video-box { height: 240px; }
+}
+</style>
+
+<script>
+/* ══════════════════════════════════════════════
+   CARD DATA
+══════════════════════════════════════════════ */
+const data = [
+  {
+    title: "TRAFFIC & TRANSPORT",
+    video: "traffic.mp4",
+    desc:  "Millions of vehicles burn fossil fuels daily, releasing CO₂ and heat that accumulates in the atmosphere and accelerates global warming at an unprecedented rate.",
+    impact: 82,
+    badge: "badge-red", badgeText: "CRITICAL",
+    tags: ["CO₂ Emissions","Urban Pollution","16% Global Share","Fastest Growing"],
+    color: "#ff4d4d"
+  },
+  {
+    title: "AVIATION",
+    video: "aviation.mp4",
+    desc:  "Aircraft emissions released at high altitudes trap heat 2× more effectively than ground-level emissions. 100,000 flights per day, every day.",
+    impact: 74,
+    badge: "badge-orange", badgeText: "HIGH",
+    tags: ["Contrail Forcing","High Altitude","2.5% Global CO₂","Growing Sector"],
+    color: "#f97316"
+  },
+  {
+    title: "INDUSTRY",
+    video: "ind.mp4",
+    desc:  "Factories continuously emit greenhouse gases that alter Earth's climate balance over decades. Steel, cement, and chemicals alone account for 22% of global emissions.",
+    impact: 88,
+    badge: "badge-red", badgeText: "CRITICAL",
+    tags: ["22% Global Share","Methane","CO₂","Hard to Decarbonize"],
+    color: "#ff4d4d"
+  },
+  {
+    title: "POWER PLANTS",
+    video: "powerplant.mp4",
+    desc:  "Coal and gas power plants release massive CO₂ levels, driving climate instability. Energy production is the single largest source of global emissions at 24%.",
+    impact: 91,
+    badge: "badge-red", badgeText: "CRITICAL",
+    tags: ["24% Global Share","Coal","Gas","Sulfur Emissions"],
+    color: "#ff003c"
+  },
+  {
+    title: "PLASTIC WASTE",
+    video: "plastic_waste.mp4",
+    desc:  "Plastic pollution persists for centuries, contaminating ecosystems and accelerating climate stress. 8 million tonnes enter oceans annually.",
+    impact: 68,
+    badge: "badge-orange", badgeText: "HIGH",
+    tags: ["Ocean Pollution","Microplastics","300 Years Decay","Ecosystem Damage"],
+    color: "#f97316"
+  },
+  {
+    title: "DEFORESTATION",
+    video: "deforestation.mp4",
+    desc:  "Forest destruction removes Earth's natural carbon absorption systems. Deforestation releases 4.8 Gt of CO₂ annually — equal to all of Europe's emissions.",
+    impact: 86,
+    badge: "badge-red", badgeText: "CRITICAL",
+    tags: ["4.8 Gt CO₂/yr","Amazon Tipping Point","Biodiversity Loss","Carbon Sink Loss"],
+    color: "#ff4d4d"
+  },
+  {
+    title: "URBAN EXPANSION",
+    video: "urban_expansion.mp4",
+    desc:  "Concrete replaces natural land, creating heat islands that raise temperatures 2–8°C above surrounding areas. 68% of humanity will live in cities by 2050.",
+    impact: 72,
+    badge: "badge-orange", badgeText: "HIGH",
+    tags: ["Heat Islands","Impervious Surfaces","Albedo Change","Urban Sprawl"],
+    color: "#f97316"
+  },
+  {
+    title: "MELTING ICE",
+    video: "melting_ice.mp4",
+    desc:  "Rising temperatures collapse polar ice sheets, raising sea levels globally. Greenland alone has lost 3.3 trillion tonnes of ice since 2002.",
+    impact: 95,
+    badge: "badge-red", badgeText: "CATASTROPHIC",
+    tags: ["3.3 Trillion Tonnes Lost","Sea Level Rise","Albedo Feedback","Tipping Point"],
+    color: "#ff003c"
+  }
+];
+
+/* ══════════════════════════════════════════════
+   RENDER CARDS
+══════════════════════════════════════════════ */
+const grid = document.getElementById('grid');
+grid.innerHTML = data.map((d, idx) => `
+<div class="card" id="card${idx}"
+  onclick="openModal(${idx})"
+  onmousemove="tilt3d(event,this)"
+  onmouseleave="resetTilt(this)">
+  <div class="card-num">${String(idx+1).padStart(2,'0')}</div>
+  <div class="card-badge ${d.badge}">${d.badgeText}</div>
+  <div class="video-box">
+    <video src="/videos/${d.video}" autoplay muted loop playsinline></video>
+  </div>
+  <div class="card-content">
+    <h3>${d.title}</h3>
+    <p>${d.desc}</p>
+    <div class="impact-bar-wrap">
+      <span class="impact-label">IMPACT</span>
+      <div class="impact-track">
+        <div class="impact-fill" id="bar${idx}" style="width:0%;background:${d.color}"></div>
+      </div>
+      <span class="impact-pct" style="color:${d.color}">${d.impact}%</span>
+    </div>
+  </div>
+</div>`).join('');
+
+// Animate bars on scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = entry.target.id.replace('card','');
+      setTimeout(() => {
+        document.getElementById('bar'+idx).style.width = data[idx].impact + '%';
+      }, 200);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+data.forEach((_, i) => {
+  const el = document.getElementById('card'+i);
+  if (el) observer.observe(el);
+});
+
+/* ══════════════════════════════════════════════
+   3D TILT EFFECT
+══════════════════════════════════════════════ */
+function tilt3d(e, card) {
+  const rect = card.getBoundingClientRect();
+  const cx = rect.left + rect.width  / 2;
+  const cy = rect.top  + rect.height / 2;
+  const dx = (e.clientX - cx) / (rect.width  / 2);
+  const dy = (e.clientY - cy) / (rect.height / 2);
+  card.style.transform = `perspective(1000px) rotateY(${dx*8}deg) rotateX(${-dy*8}deg) scale(1.03)`;
+  card.style.transition = 'transform .05s ease';
+}
+function resetTilt(card) {
+  card.style.transform = '';
+  card.style.transition = 'transform .6s cubic-bezier(.23,1,.32,1)';
+}
+
+/* ══════════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════════ */
+function openModal(idx) {
+  const d = data[idx];
+  const modal = document.getElementById('modal');
+  document.getElementById('modalVideo').src = '/videos/' + d.video;
+  document.getElementById('modalTitle').textContent = d.title;
+  document.getElementById('modalDesc').textContent = d.desc;
+  document.getElementById('modalTags').innerHTML = d.tags.map(t => `<span class="mtag">${t}</span>`).join('');
+
+  const fill = document.getElementById('mmFill');
+  const pct  = document.getElementById('mmPct');
+  fill.style.width = '0%'; pct.textContent = '0%';
+  setTimeout(() => {
+    fill.style.width = d.impact + '%';
+    pct.textContent = d.impact + '%';
+  }, 300);
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  const modal = document.getElementById('modal');
+  const vid   = document.getElementById('modalVideo');
+  modal.classList.remove('active');
+  vid.pause(); vid.src = '';
+  document.body.style.overflow = '';
+}
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal') ||
+      e.target === document.querySelector('.modal-bg-effect')) closeModal();
+});
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
+
+/* ══════════════════════════════════════════════
+   PARTICLE BACKGROUND CANVAS
+══════════════════════════════════════════════ */
+const bg = document.getElementById('bgCanvas');
+const bx = bg.getContext('2d');
+let W, H, particles = [];
+
+function resizeBg() {
+  W = bg.width  = window.innerWidth;
+  H = bg.height = window.innerHeight;
+  particles = Array.from({length: 120}, () => ({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    vx: (Math.random() - .5) * .4,
+    vy: (Math.random() - .5) * .4,
+    r:  Math.random() * 1.5 + .3,
+    a:  Math.random() * .4 + .05,
+    c:  Math.random() > .7 ? '#ff003c' : '#00ffe1'
+  }));
+}
+
+function drawBg() {
+  bx.clearRect(0, 0, W, H);
+  // Draw connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        bx.beginPath();
+        bx.strokeStyle = `rgba(0,255,225,${(1 - dist/120) * .05})`;
+        bx.lineWidth = .5;
+        bx.moveTo(particles[i].x, particles[i].y);
+        bx.lineTo(particles[j].x, particles[j].y);
+        bx.stroke();
+      }
+    }
+  }
+  // Draw particles
+  particles.forEach(p => {
+    bx.beginPath();
+    bx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    bx.fillStyle = p.c.replace(')', `,${p.a})`).replace('rgb', 'rgba').replace('#ff003c', `rgba(255,0,60,${p.a})`).replace('#00ffe1', `rgba(0,255,225,${p.a})`);
+    bx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0 || p.x > W) p.vx *= -1;
+    if (p.y < 0 || p.y > H) p.vy *= -1;
+  });
+  requestAnimationFrame(drawBg);
+}
+resizeBg(); drawBg();
+window.addEventListener('resize', resizeBg);
+
+/* ══════════════════════════════════════════════
+   SNOW CANVAS
+══════════════════════════════════════════════ */
+const sc = document.createElement('canvas');
+sc.style.cssText = 'position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5';
+document.body.appendChild(sc);
+const sx = sc.getContext('2d');
+let sw, sh, flakes = [];
+function resizeSnow() {
+  sw = sc.width = innerWidth; sh = sc.height = innerHeight;
+  flakes = Array.from({length: 80}, () => ({
+    x: Math.random() * sw, y: Math.random() * sh,
+    r: Math.random() * 1.5 + .5,
+    vy: Math.random() * .6 + .2,
+    vx: (Math.random() - .5) * .3,
+    a: Math.random() * .6 + .2
+  }));
+}
+function drawSnow() {
+  sx.clearRect(0, 0, sw, sh);
+  flakes.forEach(f => {
+    sx.beginPath(); sx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+    sx.fillStyle = `rgba(255,255,255,${f.a})`; sx.fill();
+    f.x += f.vx; f.y += f.vy;
+    if (f.y > sh + 5) { f.y = -5; f.x = Math.random() * sw; }
+    if (f.x < 0) f.x = sw; if (f.x > sw) f.x = 0;
+  });
+  requestAnimationFrame(drawSnow);
+}
+resizeSnow(); drawSnow();
+window.addEventListener('resize', resizeSnow);
+
+/* ══════════════════════════════════════════════
+   LIVE HERO STATS
+══════════════════════════════════════════════ */
+setInterval(() => {
+  const el = document.getElementById('hco2');
+  if (el) el.textContent = (418 + Math.random() * 2).toFixed(1);
+  const r = document.getElementById('hrisk');
+  if (r) r.textContent = Math.floor(75 + Math.random() * 14) + '%';
+}, 3500);
+
+</script>
+
+</body>
+</html>

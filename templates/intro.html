@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Climate Mirror | Welcome</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;700;900&family=Audiowide&display=swap" rel="stylesheet">
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='intro', user=user) }}
+
+<div class="bg"></div>
+<canvas id="particles"></canvas>
+
+<div class="center">
+  <div class="subtitle">AI · CLIMATE · INTELLIGENCE · 2026</div>
+  <h1 class="main-title">THE CLIMATE<br>MIRROR</h1>
+  <div class="terminal" id="terminal"></div>
+  <div class="btns">
+    <a href="/home"    class="btn btn-primary">ENTER PLATFORM</a>
+    <a href="/login"   class="btn btn-outline">LOGIN</a>
+    <a href="/register"class="btn btn-ghost">REGISTER</a>
+  </div>
+</div>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow-x:hidden;}
+body{
+  background:#000;
+  color:white;
+  font-family:'Syncopate',sans-serif;
+  min-height:100vh;
+}
+.bg{
+  position:fixed;inset:0;z-index:-2;
+  background:
+    linear-gradient(to bottom,rgba(2,6,23,0.55),rgba(0,0,0,0.85)),
+    url("https://images.unsplash.com/photo-1482192505345-5655af888cc4?auto=format&fit=crop&w=2400&q=80");
+  background-size:cover;background-position:center;
+  animation:bgZoom 90s ease-in-out infinite alternate;
+}
+@keyframes bgZoom{from{transform:scale(1)}to{transform:scale(1.08)}}
+#particles{position:fixed;inset:0;z-index:-1;pointer-events:none;}
+
+.center{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:80px 24px 40px;
+  gap:20px;
+}
+.subtitle{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.7rem;letter-spacing:6px;color:#7dd3fc;
+  border:1px solid rgba(0,255,225,0.2);
+  padding:6px 20px;border-radius:20px;
+  background:rgba(0,255,225,0.05);
+}
+.main-title{
+  font-size:clamp(2.8rem,7vw,6rem);
+  letter-spacing:10px;line-height:1.15;
+  background:linear-gradient(135deg,#ffffff 0%,#dff7ff 30%,#9ee9ff 60%,#ffffff 100%);
+  background-size:200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shimmer 8s linear infinite,titleFloat 6s ease-in-out infinite alternate;
+  text-shadow:none;
+}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+@keyframes titleFloat{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+
+.terminal{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.75rem;letter-spacing:3px;color:#bdefff;
+  text-shadow:0 0 8px rgba(160,220,255,0.5);
+  min-height:36px;max-width:600px;text-align:center;
+  line-height:1.8;
+}
+
+.btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+.btn{
+  padding:16px 44px;border-radius:50px;
+  font-family:'Audiowide',sans-serif;
+  letter-spacing:4px;font-size:0.75rem;
+  text-decoration:none;transition:all 0.35s;
+  display:inline-block;
+}
+.btn-primary{
+  background:linear-gradient(135deg,#8ee6ff,#5edcff,#6fe3c7);
+  color:#020617;font-weight:700;
+  box-shadow:0 8px 32px rgba(120,220,255,0.3);
+}
+.btn-primary:hover{transform:translateY(-4px) scale(1.04);box-shadow:0 16px 48px rgba(120,220,255,0.5);}
+.btn-outline{
+  background:transparent;
+  border:2px solid rgba(190,240,255,0.5);
+  color:#bdefff;
+}
+.btn-outline:hover{background:rgba(190,240,255,0.08);transform:translateY(-3px);}
+.btn-ghost{
+  background:transparent;
+  border:1px solid rgba(190,240,255,0.25);
+  color:rgba(190,240,255,0.6);
+}
+.btn-ghost:hover{border-color:rgba(190,240,255,0.5);color:#bdefff;}
+</style>
+<script>
+// Particle canvas
+const cv=document.getElementById('particles'),x=cv.getContext('2d');
+let W,H,pts=[];
+function resize(){W=cv.width=innerWidth;H=cv.height=innerHeight;pts=[...Array(80)].map(()=>({x:Math.random()*W,y:Math.random()*H,vy:Math.random()*0.4+0.1,r:Math.random()*1.2+0.3,o:Math.random()*0.3+0.05}));}
+function draw(){x.clearRect(0,0,W,H);pts.forEach(p=>{x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fillStyle=`rgba(0,255,225,${p.o})`;x.fill();p.y-=p.vy;if(p.y<-5)p.y=H+5;});}
+function loop(){draw();requestAnimationFrame(loop);}
+resize();loop();window.addEventListener('resize',resize);
+
+// Terminal
+const logs=[
+  "> [SYSTEM] CLIMATE MIRROR v2.0 INITIALIZING...",
+  "> [AI] LOADING 9 AGENTIC INTELLIGENCE MODULES...",
+  "> [DATA] CO₂: 418.4 PPM — ABOVE SAFE THRESHOLD",
+  "> [ALERT] GLOBAL TEMP RISE: +1.45°C DETECTED",
+  "> [STATUS] ALL AGENTS OPERATIONAL ✓ ACCURACY 96.8%"
+];
+let i=0,j=0;const t=document.getElementById('terminal');
+function type(){if(i<logs.length){if(j<logs[i].length){t.innerHTML+=logs[i][j++];setTimeout(type,28);}else{t.innerHTML+='<br>';i++;j=0;setTimeout(type,500);}}}
+setTimeout(type,800);
+</script>
+</body>
+</html>

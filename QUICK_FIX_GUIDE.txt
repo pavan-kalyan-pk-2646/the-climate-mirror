@@ -1,0 +1,100 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║           CLIMATE MIRROR VERCEL DEPLOYMENT — QUICK FIX GUIDE            ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+ERROR YOU SAW:
+  Bad Request — The CSRF token is missing.
+
+ROOT CAUSES:
+  1. Forms missing {{ csrf_token() }} fields (4 templates)
+  2. SECRET_KEY regenerated on each Vercel invocation (app.py)
+
+WHAT'S FIXED:
+  ✅ register.html     — CSRF token added
+  ✅ login.html        — CSRF token added
+  ✅ climate.html      — CSRF token added
+  ✅ notebook.html     — CSRF token added
+  ✅ app.py            — Stable SECRET_KEY
+  ✅ vercel.json       — Explicit Flask config (NEW)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3-STEP DEPLOYMENT:
+
+1️⃣  PUSH CODE
+    git add .
+    git commit -m "Fix: CSRF token + stable SECRET_KEY for Vercel"
+    git push origin main
+
+2️⃣  SET ENV VAR
+    → Vercel Dashboard → Project Settings → Environment Variables
+    → Add: SECRET_KEY = [your-secure-random-32-char-string]
+    → Environments: Production
+
+3️⃣  GENERATE STRONG KEY
+    python3 -c "import secrets; print(secrets.token_hex(32))"
+    (Copy output to Vercel env var)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TEST THE FIX:
+  1. Visit your Vercel URL
+  2. Go to /register
+  3. Fill form → Submit
+  4. ✅ Should work now!
+
+If still broken:
+  • Clear browser cookies (Ctrl+Shift+Delete)
+  • Hard refresh page (Ctrl+Shift+R)
+  • Check Vercel build logs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DATABASE PERSISTENCE (IMPORTANT!):
+
+Your app uses SQLite. On Vercel, data resets on each deploy.
+
+  Option A: Keep SQLite (data resets) → No setup needed
+  Option B: Use Vercel Postgres → Set up in Vercel Storage tab
+  Option C: External DB (Neon, Supabase) → Get PostgreSQL URL, set as env var
+
+For persistent data, use Vercel Postgres (easiest):
+  1. Vercel Dashboard → Storage → Create Database → Postgres
+  2. Done! (Auto-configured via DATABASE_URL env var)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHAT NOT TO DO:
+  ❌ Don't use "climate-mirror-dev-key-2024" in production
+  ❌ Don't hardcode SECRET_KEY in app.py for prod
+  ❌ Don't commit SECRET_KEY to git
+  ❌ Don't expect SQLite data to persist on Vercel
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TROUBLESHOOTING:
+
+Q: "Build still fails"
+A: Did you push all changes? Check git status, git add ., git push
+
+Q: "Form still says CSRF missing"
+A: Check Vercel build log. If build passed, clear cookies + hard refresh
+
+Q: "Timeout errors"
+A: Increase maxDuration in vercel.json (currently 30s, max 60s for Pro)
+
+Q: "Data disappeared after redeploy"
+A: Yep, SQLite on Vercel doesn't persist. Switch to Postgres.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FILES TO READ:
+  • DEPLOYMENT_GUIDE.md    — Complete guide (database, env vars, etc.)
+  • FIXES_SUMMARY.md       — Detailed changelog of all fixes
+  • vercel.json            — Flask runtime config
+  • app.py                 — Check SECRET_KEY logic (~line 45-52)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Created: August 18, 2026
+Status: Ready to deploy! 🚀

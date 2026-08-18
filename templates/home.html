@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Home | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='home', user=user) }}
+
+<div class="bg"></div>
+<div class="particles" id="pc"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">AGENTIC AI · 9 AGENTS · REAL-TIME CLIMATE INTELLIGENCE</div>
+    <h1>AI Climate Behavior<br><span>Simulator</span></h1>
+    <p>An advanced neural platform with 9 chained AI agents that converts human behavioral patterns into measurable climate outcomes, projections, and personalised action plans.</p>
+    <div class="hero-btns">
+      <a href="/login"    class="btn btn-cta">INITIALIZE SYSTEM</a>
+      <a href="/register" class="btn btn-out">CREATE ACCOUNT</a>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE METRICS -->
+<section class="metrics-section">
+  <div class="metrics">
+    <div class="metric"><h3 id="co2">418</h3><span>CO₂ ppm (live)</span></div>
+    <div class="metric"><h3>+1.45°C</h3><span>Global temp rise</span></div>
+    <div class="metric"><h3 id="risk">79%</h3><span>Climate risk index</span></div>
+    <div class="metric"><h3>9</h3><span>AI agents active</span></div>
+    <div class="metric"><h3>60+</h3><span>Knowledge topics</span></div>
+    <div class="metric"><h3>🟢</h3><span>All systems live</span></div>
+  </div>
+</section>
+
+<!-- TERMINAL -->
+<div class="terminal-box">
+  <p><span class="tc">&gt;</span> [SYSTEM] CLIMATE MIRROR v2.0 — AGENTIC AI PLATFORM READY</p>
+  <p><span class="tc">&gt;</span> [AGENT-0] ORCHESTRATOR: COORDINATING 9-AGENT PIPELINE...</p>
+  <p><span class="tc">&gt;</span> [AGENT-1] ANALYZER: FACTOR ANALYSIS + SEVERITY DETECTION</p>
+  <p><span class="tc">&gt;</span> [AGENT-2] ADVISOR: PRIORITY ACTION PLAN GENERATION</p>
+  <p><span class="tc">&gt;</span> [AGENT-3] DISASTER: 6-TYPE RISK MATRIX LOADED</p>
+  <p><span class="tc">&gt;</span> [AGENT-4] STORY: NARRATIVE ENGINE STANDBY</p>
+  <p><span class="tc">&gt;</span> [AGENT-5] CHAT: 60-TOPIC KNOWLEDGE BASE ACTIVE</p>
+  <p><span class="tc">&gt;</span> [AGENT-6] FORECAST: TREND PROJECTION READY</p>
+  <p><span class="tc">&gt;</span> [AGENT-7] COMPARATOR: HISTORY ANALYSIS LOADED</p>
+  <p><span class="tc">&gt;</span> [AGENT-8] POLICY: COUNTRY DATABASE READY</p>
+  <p><span class="tc">&gt;</span> [STATUS] ALL 9 AGENTS OPERATIONAL ✓ ACCURACY 96.8%</p>
+</div>
+
+<!-- AGENTS -->
+<section class="section">
+  <h2>9 Chained AI Agents</h2>
+  <div class="agents-grid">
+    <div class="agent-card"><div class="a-num">0</div><h4>Orchestrator</h4><p>Coordinates all agents in sequence, passes context between them, logs every step of the pipeline.</p></div>
+    <div class="agent-card"><div class="a-num">1</div><h4>Analyzer</h4><p>Deep analysis of 4 climate factors — ranks by weighted impact, detects severity level from Minimal to Critical.</p></div>
+    <div class="agent-card"><div class="a-num">2</div><h4>Advisor</h4><p>Builds a prioritised P1/P2/P3 action plan with specific details, timeframes, and country context.</p></div>
+    <div class="agent-card"><div class="a-num">3</div><h4>Disaster Risk</h4><p>Calculates risk scores for 6 disaster types: heatwave, flood, wildfire, drought, cyclone, famine.</p></div>
+    <div class="agent-card"><div class="a-num">4</div><h4>Story Agent</h4><p>Generates a fully personalised Year 2050 narrative using chained outputs from all prior agents.</p></div>
+    <div class="agent-card"><div class="a-num">5</div><h4>Chat Agent</h4><p>Real-time Q&amp;A across 60+ climate topics with context from your latest simulation results.</p></div>
+    <div class="agent-card"><div class="a-num">6</div><h4>Forecast Agent</h4><p>Linear regression on your history — projects next 4 simulation outcomes with trend detection.</p></div>
+    <div class="agent-card"><div class="a-num">7</div><h4>Comparator</h4><p>Compares current run vs personal best, last run, all-time stats and calculates percentile.</p></div>
+    <div class="agent-card"><div class="a-num">8</div><h4>Policy Agent</h4><p>Country-specific policy data for India, USA, China, Germany, Brazil, Australia with gap analysis.</p></div>
+  </div>
+</section>
+
+<!-- PAGES -->
+<section class="section">
+  <h2>Platform Sections</h2>
+  <div class="pages-grid">
+    <a href="/login" class="page-card"><div class="pc-icon">⚡</div><h3>Simulator</h3><p>Run AI climate simulations with 4 factor inputs. All 9 agents process your data and deliver full results.</p></a>
+    <a href="/login" class="page-card"><div class="pc-icon">📊</div><h3>History</h3><p>View all past simulations with trend charts, radar analysis, eco-scores, and AI forecast.</p></a>
+    <a href="/login" class="page-card"><div class="pc-icon">🎬</div><h3>Stories</h3><p>Video-driven narratives showing the real-world impact of human climate decisions.</p></a>
+    <a href="/login" class="page-card"><div class="pc-icon">☣</div><h3>Disaster Room</h3><p>Interactive disaster simulation — click any scenario to see AI-driven consequences.</p></a>
+    <a href="/login" class="page-card"><div class="pc-icon">🧠</div><h3>Behavior Mirror</h3><p>Analyze your daily behavior patterns and see their long-term climate impact.</p></a>
+    <a href="/login" class="page-card"><div class="pc-icon">🖼</div><h3>Gallery</h3><p>Neural climate archive with searchable image gallery of climate impacts.</p></a>
+    <a href="/login" class="page-card"><div class="pc-icon">📓</div><h3>Notebook</h3><p>Full research notebook with climate facts, AI explanations, and your personal notes.</p></a>
+    <a href="/login" class="page-card"><div class="pc-icon">🏆</div><h3>Leaderboard</h3><p>Compare your sustainability eco-score with other researchers globally.</p></a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-links">
+    <a href="/intro">Intro</a>
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
+    <a href="/narrative">Narrative</a>
+    <a href="/image">Gallery</a>
+  </div>
+  <p>© 2026 The Climate Mirror · AI Climate Intelligence Platform · Final Year Project</p>
+</footer>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#020617;color:#fff;overflow-x:hidden;font-family:Inter,sans-serif;min-height:100vh;}
+.bg{position:fixed;inset:0;background:linear-gradient(to bottom,rgba(2,6,23,.7),rgba(2,6,23,.95)),url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=2070');background-size:cover;background-position:center;z-index:-2;}
+.particles{position:fixed;inset:0;pointer-events:none;z-index:-1;}
+.particle{position:absolute;width:1px;height:50px;background:linear-gradient(to top,transparent,#00ffe1);opacity:.1;animation:pf linear infinite;}
+@keyframes pf{from{transform:translateY(-5vh)}to{transform:translateY(110vh)}}
+
+/* HERO */
+.hero{min-height:88vh;display:flex;align-items:center;justify-content:center;padding:40px 24px;text-align:center;}
+.hero-inner{max-width:800px;}
+.hero-tag{display:inline-block;padding:6px 18px;border-radius:20px;background:rgba(0,255,225,.07);border:1px solid rgba(0,255,225,.2);color:#7dd3fc;font-size:.65rem;letter-spacing:3px;font-family:Orbitron,sans-serif;margin-bottom:20px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(2rem,5vw,3.8rem);color:#00ffe1;text-shadow:0 0 40px rgba(0,255,225,.45);margin-bottom:18px;line-height:1.2;}
+h1 span{color:#7dd3fc;}
+.hero p{font-size:1.05rem;color:#cbd5e1;max-width:660px;margin:0 auto 32px;line-height:1.75;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn{padding:15px 38px;border-radius:50px;font-family:Orbitron,sans-serif;font-weight:700;letter-spacing:2px;font-size:.72rem;text-decoration:none;transition:.3s;display:inline-block;}
+.btn-cta{background:linear-gradient(135deg,#00ffe1,#00bcd4);color:#020617;box-shadow:0 0 28px rgba(0,255,225,.35);}
+.btn-cta:hover{transform:translateY(-4px);box-shadow:0 0 50px rgba(0,255,225,.6);}
+.btn-out{border:2px solid rgba(0,255,225,.5);color:#00ffe1;}
+.btn-out:hover{background:rgba(0,255,225,.08);transform:translateY(-3px);}
+
+/* METRICS */
+.metrics-section{max-width:1200px;margin:0 auto 60px;padding:0 24px;}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;}
+.metric{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:24px;text-align:center;transition:.3s;}
+.metric:hover{border-color:rgba(0,255,225,.3);background:rgba(0,255,225,.04);}
+.metric h3{color:#00ffe1;font-family:Orbitron,sans-serif;font-size:1.8rem;margin-bottom:6px;}
+.metric span{color:#94a3b8;font-size:.78rem;}
+
+/* TERMINAL */
+.terminal-box{max-width:980px;margin:0 auto 70px;background:rgba(2,6,23,.95);border-radius:14px;border:1px solid rgba(0,255,225,.18);padding:24px 28px;font-family:'JetBrains Mono',monospace;}
+.terminal-box p{color:#00ffe1;padding:3px 0;font-size:.76rem;letter-spacing:.5px;border-left:2px solid rgba(0,255,225,.2);padding-left:14px;margin-bottom:4px;}
+.tc{color:#7dd3fc;}
+
+/* SECTIONS */
+.section{max-width:1300px;margin:0 auto 80px;padding:0 24px;}
+.section h2{font-family:Orbitron,sans-serif;font-size:1.8rem;text-align:center;margin-bottom:40px;color:#fff;}
+
+/* AGENTS */
+.agents-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+.agent-card{background:rgba(0,255,225,.04);border:1px solid rgba(0,255,225,.12);border-radius:16px;padding:22px;transition:.3s;position:relative;}
+.agent-card:hover{transform:translateY(-5px);border-color:rgba(0,255,225,.3);background:rgba(0,255,225,.07);}
+.a-num{position:absolute;top:14px;right:16px;font-family:Orbitron,sans-serif;font-size:1.4rem;color:rgba(0,255,225,.2);font-weight:900;}
+.agent-card h4{font-family:Orbitron,sans-serif;font-size:.75rem;color:#00ffe1;letter-spacing:2px;margin-bottom:8px;}
+.agent-card p{font-size:.8rem;color:#94a3b8;line-height:1.6;}
+
+/* PAGES */
+.pages-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;}
+.page-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:28px;text-decoration:none;color:inherit;transition:.3s;display:block;}
+.page-card:hover{transform:translateY(-6px);border-color:rgba(0,255,225,.25);background:rgba(0,255,225,.04);}
+.pc-icon{font-size:2rem;margin-bottom:12px;}
+.page-card h3{font-family:Orbitron,sans-serif;font-size:.78rem;color:#00ffe1;letter-spacing:2px;margin-bottom:8px;}
+.page-card p{font-size:.8rem;color:#94a3b8;line-height:1.6;}
+
+/* FOOTER */
+footer{padding:40px 24px;text-align:center;background:rgba(0,0,0,.4);border-top:1px solid rgba(255,255,255,.06);}
+.footer-links{display:flex;justify-content:center;gap:24px;margin-bottom:14px;flex-wrap:wrap;}
+.footer-links a{color:#64748b;text-decoration:none;font-size:.78rem;letter-spacing:1px;transition:.2s;}
+.footer-links a:hover{color:#00ffe1;}
+footer p{color:#475569;font-size:.72rem;letter-spacing:2px;}
+</style>
+<script>
+const pc=document.getElementById('pc');
+for(let i=0;i<60;i++){const p=document.createElement('div');p.className='particle';p.style.cssText=`left:${Math.random()*100}vw;animation-duration:${Math.random()*2+1.2}s;animation-delay:${Math.random()*6}s;opacity:${Math.random()*.2}`;pc.appendChild(p);}
+setInterval(()=>{document.getElementById('co2').innerText=Math.floor(414+Math.random()*8);document.getElementById('risk').innerText=Math.floor(74+Math.random()*14)+'%';},4000);
+</script>
+</body>
+</html>

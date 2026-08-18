@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>History | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='history', user=user) }}
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="page-hd">
+    <div>
+      <div class="page-title">Research Archive</div>
+      <div class="page-sub">{{ user }} · {{ records|length }} simulations logged · click any row for detail</div>
+    </div>
+    <div style="text-align:right">
+      <div class="clock" id="clock">00:00:00</div>
+      <div class="sys-status">SYSTEM: <span style="color:#00ff88">ACTIVE</span></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="sb"><label>TOTAL RUNS</label><span>{{ records|length }}</span></div>
+    <div class="sb"><label>AVG TEMP</label>
+      <span>{% if records %}+{{ "%.2f"|format(records|map(attribute='temp')|list|sum / records|length) }}°C{% else %}—{% endif %}</span></div>
+    <div class="sb"><label>BEST TEMP</label>
+      <span style="color:#00ff88">{% if records %}+{{ records|map(attribute='temp')|list|min }}°C{% else %}—{% endif %}</span></div>
+    <div class="sb"><label>WORST TEMP</label>
+      <span style="color:#ff4d4d">{% if records %}+{{ records|map(attribute='temp')|list|max }}°C{% else %}—{% endif %}</span></div>
+    <div class="sb"><label>AVG SCORE</label>
+      <span>{% if records %}{{ (records|map(attribute='score')|list|sum / records|length)|int }}{% else %}—{% endif %}</span></div>
+  </div>
+
+  <!-- AI FORECAST -->
+  <div class="forecast-banner">
+    📈 <strong style="color:#00ffe1">AI Forecast Agent:</strong> {{ ai_forecast }}
+  </div>
+
+  <!-- CHARTS -->
+  {% if records %}
+  <div class="charts-grid">
+    <div class="chart-box">
+      <div class="ct">Temperature & Eco Score Trend</div>
+      <div style="position:relative;height:170px"><canvas id="trendC"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="ct">Latest Run — Factor Radar</div>
+      <div style="position:relative;height:170px"><canvas id="radarC"></canvas></div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- DETAIL PANEL -->
+  <div class="detail-panel" id="dp" style="display:none">
+    <div class="dp-hd">
+      <div id="dp-loc" class="dp-loc"></div>
+      <button onclick="document.getElementById('dp').style.display='none'" class="dp-close">✕ CLOSE</button>
+    </div>
+    <div class="dp-grid" id="dp-grid"></div>
+    <div class="dp-summary" id="dp-summary"></div>
+    <div class="dp-story" id="dp-story" style="display:none"></div>
+  </div>
+
+  <!-- TABLE -->
+  {% if records %}
+  <div class="table-wrap">
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>DATE</th><th>COUNTRY</th>
+            <th>EMIS</th><th>ENERGY</th><th>TRANS</th><th>INDUST</th>
+            <th>TEMP</th><th>SCORE</th><th>IMPACT</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in records %}
+          <tr onclick="showDetail({{ r|tojson }})">
+            <td style="color:#475569;font-size:.7rem">{{ loop.index }}</td>
+            <td>{{ r.date }}<br><span style="color:#475569;font-size:.65rem">{{ r.time }}</span></td>
+            <td>{{ r.country }}</td>
+            <td>{{ r.emission|int }}</td>
+            <td>{{ r.energy|int }}</td>
+            <td>{{ r.transport|int }}</td>
+            <td>{{ r.industry|int }}</td>
+            <td><strong style="color:#00ffe1">+{{ r.temp }}°C</strong></td>
+            <td><span style="color:{% if r.score and r.score > 60 %}#00ff88{% elif r.score and r.score > 35 %}#facc15{% else %}#ff4d4d{% endif %}">{{ r.score or '—' }}</span></td>
+            <td>
+              {% if "Low" in r.impact or "Safe" in r.impact %}<span class="badge bl">LOW</span>
+              {% elif "Medium" in r.impact %}<span class="badge bm">MED</span>
+              {% else %}<span class="badge bh">HIGH</span>{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div style="font-size:3rem;margin-bottom:14px">📊</div>
+    <div>NO SIMULATIONS YET</div>
+    <a href="/climate" style="color:#00ffe1;display:block;margin-top:12px;font-size:.78rem">⚡ RUN YOUR FIRST SIMULATION →</a>
+  </div>
+  {% endif %}
+
+  <!-- NAVIGATION -->
+  <div class="page-nav">
+    <a href="/climate"    class="pn">⚡ SIMULATE</a>
+    <a href="/leaderboard"class="pn">🏆 LEADERBOARD</a>
+    <a href="/stories"    class="pn">🎬 STORIES</a>
+    <a href="/disaster"   class="pn">☣ DISASTER</a>
+    <a href="/behaviors"  class="pn">🧠 BEHAVIOR</a>
+    <a href="/narrative"  class="pn">🎞 NARRATIVE</a>
+    <a href="/image"      class="pn">🖼 GALLERY</a>
+    <a href="/notebook"   class="pn">📓 NOTEBOOK</a>
+  </div>
+
+</div>
+
+<style>
+:root{--g:#00ffe1;--bg:#020617;--card:rgba(11,18,32,.97);}
+*{margin:0;padding:0;box-sizing:border-box;cursor:default;}
+body{background:var(--bg);color:white;font-family:Inter,sans-serif;min-height:100vh;overflow-x:hidden;
+  background-image:linear-gradient(rgba(0,255,225,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,225,.025) 1px,transparent 1px);
+  background-size:50px 50px;}
+
+.wrap{max-width:1400px;margin:0 auto;padding:24px 28px 70px;}
+
+.page-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;padding-left:18px;border-left:4px solid var(--g);}
+.page-title{font-family:Orbitron,sans-serif;font-size:2rem;font-weight:900;background:linear-gradient(to right,#fff,var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.page-sub{font-size:.68rem;color:#7dd3fc;letter-spacing:2px;margin-top:4px;}
+.clock{font-family:JetBrains Mono,monospace;color:var(--g);font-size:.95rem;}
+.sys-status{font-size:.6rem;color:#64748b;letter-spacing:2px;font-family:Orbitron,sans-serif;margin-top:3px;}
+
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px;}
+.sb{background:var(--card);border:1px solid rgba(0,255,225,.12);border-radius:12px;padding:16px;text-align:center;}
+.sb label{display:block;font-size:.58rem;color:var(--g);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;}
+.sb span{font-family:JetBrains Mono,monospace;font-size:1.2rem;font-weight:700;}
+
+.forecast-banner{background:rgba(0,255,225,.04);border:1px solid rgba(0,255,225,.14);border-radius:10px;padding:12px 16px;font-size:.8rem;color:#7dd3fc;line-height:1.6;margin-bottom:16px;}
+
+.charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;}
+.chart-box{background:var(--card);border:1px solid rgba(0,255,225,.1);border-radius:14px;padding:18px;}
+.ct{font-family:Orbitron,sans-serif;font-size:.65rem;color:var(--g);letter-spacing:2px;margin-bottom:12px;}
+
+/* DETAIL */
+.detail-panel{background:var(--card);border:1px solid rgba(0,255,225,.18);border-radius:16px;padding:22px;margin-bottom:16px;}
+.dp-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.dp-loc{font-family:Orbitron,sans-serif;font-size:.72rem;color:var(--g);letter-spacing:2px;}
+.dp-close{background:transparent;border:1px solid rgba(255,255,255,.15);color:#94a3b8;padding:6px 12px;border-radius:6px;cursor:pointer;font-family:Orbitron,sans-serif;font-size:.6rem;transition:.2s;}
+.dp-close:hover{border-color:rgba(255,77,77,.4);color:#ff7070;}
+.dp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;}
+.dp-box{background:#020617;border-radius:8px;padding:12px;}
+.dp-lbl{font-size:.6rem;color:#64748b;letter-spacing:1px;margin-bottom:5px;}
+.dp-val{font-family:JetBrains Mono,monospace;font-size:1rem;color:var(--g);}
+.dp-summary{padding:12px 14px;background:rgba(0,255,225,.04);border-left:3px solid var(--g);border-radius:0 8px 8px 0;font-size:.8rem;color:#cbd5e1;line-height:1.65;}
+.dp-story{margin-top:10px;background:#020617;border-radius:10px;padding:14px;font-family:JetBrains Mono,monospace;font-size:.76rem;color:#7dd3fc;line-height:1.9;border-left:4px solid var(--g);}
+
+/* TABLE */
+.table-wrap{background:var(--card);border-radius:0 24px 0 24px;padding:2px;
+  background:linear-gradient(135deg,rgba(0,255,225,.18),transparent 50%);margin-bottom:18px;}
+.table-card{background:#0b1220;border-radius:0 22px 0 22px;padding:22px;overflow-x:auto;}
+table{width:100%;border-collapse:separate;border-spacing:0 5px;}
+th{padding:10px 12px;font-family:Orbitron,sans-serif;font-size:.6rem;color:var(--g);text-align:left;letter-spacing:1px;white-space:nowrap;}
+td{padding:10px 12px;background:rgba(255,255,255,.02);font-family:JetBrains Mono,monospace;font-size:.76rem;transition:.2s;cursor:pointer;}
+td:first-child{border-radius:7px 0 0 7px;}
+td:last-child{border-radius:0 7px 7px 0;}
+tr:hover td{background:rgba(0,255,225,.07);}
+.badge{padding:3px 8px;border-radius:4px;font-size:.58rem;font-weight:bold;border:1px solid currentColor;font-family:Orbitron,sans-serif;}
+.bl{color:#00ff88;}.bm{color:#facc15;}.bh{color:#ff4d4d;}
+
+.empty-state{text-align:center;padding:70px;color:#64748b;font-family:Orbitron,sans-serif;letter-spacing:4px;font-size:.8rem;}
+
+/* BOTTOM NAV */
+.page-nav{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;padding-top:12px;}
+.pn{padding:9px 16px;border-radius:8px;border:1px solid rgba(0,255,225,.15);color:#94a3b8;font-family:Orbitron,sans-serif;font-size:.58rem;letter-spacing:2px;text-decoration:none;transition:.2s;}
+.pn:hover{border-color:var(--g);color:var(--g);background:rgba(0,255,225,.05);}
+
+@media(max-width:900px){.stats-grid{grid-template-columns:1fr 1fr;}.charts-grid{grid-template-columns:1fr;}.dp-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:500px){.stats-grid{grid-template-columns:1fr;}}
+</style>
+
+<script>
+setInterval(()=>{ document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+
+{% if records %}
+const recs = {{ records|tojson }};
+
+// TREND CHART
+new Chart(document.getElementById("trendC"), {
+  type:"line",
+  data:{
+    labels: recs.slice().reverse().map(r=>r.date),
+    datasets:[
+      {label:"Temp Rise",data:recs.slice().reverse().map(r=>r.temp),borderColor:"#00ffe1",tension:.4,fill:true,backgroundColor:"rgba(0,255,225,.05)",pointRadius:4,pointBackgroundColor:"#00ffe1",borderWidth:2},
+      {label:"Score/10",data:recs.slice().reverse().map(r=>(r.score||0)/10),borderColor:"#00ff88",tension:.4,fill:false,borderDash:[4,3],pointRadius:2,borderWidth:1.5}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:"#94a3b8",font:{size:9}}}},
+    scales:{x:{ticks:{color:"#64748b",font:{size:9}},grid:{display:false}},y:{ticks:{color:"#94a3b8",font:{size:9}},grid:{color:"rgba(255,255,255,.04)"}}}}
+});
+
+// RADAR CHART
+const lr = recs[0];
+new Chart(document.getElementById("radarC"), {
+  type:"radar",
+  data:{labels:["Emissions","Energy","Transport","Industry"],
+    datasets:[{data:[lr.emission,lr.energy,lr.transport,lr.industry],borderColor:"#00ffe1",backgroundColor:"rgba(0,255,225,.1)",pointBackgroundColor:"#00ffe1",pointRadius:4,borderWidth:2}]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{r:{grid:{color:"rgba(255,255,255,.07)"},angleLines:{color:"rgba(255,255,255,.07)"},ticks:{display:false},pointLabels:{color:"#7dd3fc",font:{family:"Orbitron",size:9}}}}}
+});
+{% endif %}
+
+function showDetail(r) {
+  const dp = document.getElementById('dp');
+  dp.style.display = 'block';
+  document.getElementById('dp-loc').innerText = `📍 ${r.country}  ·  ${r.date}  ·  ${r.time}`;
+  document.getElementById('dp-grid').innerHTML = `
+    <div class="dp-box"><div class="dp-lbl">TEMP RISE</div><div class="dp-val">+${r.temp}°C</div></div>
+    <div class="dp-box"><div class="dp-lbl">IMPACT</div><div class="dp-val" style="font-size:.78rem">${r.impact}</div></div>
+    <div class="dp-box"><div class="dp-lbl">ECO SCORE</div><div class="dp-val" style="color:${r.score>60?'#00ff88':r.score>35?'#facc15':'#ff4d4d'}">${r.score||'—'}/100</div></div>
+    <div class="dp-box"><div class="dp-lbl">RUNS</div><div class="dp-val">${r.emission|0} · ${r.energy|0} · ${r.transport|0} · ${r.industry|0}</div></div>`;
+  document.getElementById('dp-summary').innerHTML = r.summary || 'No summary available.';
+  const sd = document.getElementById('dp-story');
+  if(r.story && typeof r.story === 'object') {
+    sd.style.display = 'block';
+    sd.innerHTML = (r.story.opening||'') + '<br><br>' + (r.story.body||'') + '<br><br>' + (r.story.outlook||'');
+  } else if(r.story && typeof r.story === 'string' && r.story.length > 5) {
+    sd.style.display = 'block';
+    sd.innerHTML = r.story;
+  } else { sd.style.display = 'none'; }
+  dp.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>

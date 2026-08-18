@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stories | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='stories', user=user) }}
+
+<div class="bg"></div>
+
+<div class="wrapper">
+  <div class="page-header">
+    <h2>ENVIRONMENTAL INTELLIGENCE</h2>
+    <p>Human actions reflected through a planetary lens. Each story shows the direct link between behavior and climate change.</p>
+  </div>
+
+  <!-- STORY 1 -->
+  <div class="story">
+    <div class="video-box">
+      <video src="/videos/emissions.mp4" autoplay muted loop playsinline></video>
+      <div class="video-overlay"><span class="vo-tag">CO₂</span></div>
+    </div>
+    <div class="info">
+      <div class="tag">CARBON EMISSIONS</div>
+      <h3>The Invisible Blanket</h3>
+      <p>Every tonne of CO₂ released acts as a thermal blanket around Earth. Heat-trapping gases from factories, power plants, and vehicles are destabilizing climate systems that took millions of years to develop.</p>
+      <div class="story-fact">📊 37.4 billion tonnes of CO₂ emitted globally in 2023</div>
+      <a href="/climate" class="story-btn">Run Emission Simulation →</a>
+    </div>
+  </div>
+
+  <!-- STORY 2 -->
+  <div class="story story-rev">
+    <div class="video-box">
+      <video src="/videos/transport.mp4" autoplay muted loop playsinline></video>
+      <div class="video-overlay"><span class="vo-tag">TRANSPORT</span></div>
+    </div>
+    <div class="info">
+      <div class="tag">URBAN TRANSPORT</div>
+      <h3>Cities in Motion</h3>
+      <p>1.4 billion vehicles on global roads burn fossil fuels daily. Transport accounts for 16% of global emissions — and it's growing. Every journey adds to the atmospheric burden.</p>
+      <div class="story-fact">🚗 Transport emissions grew 7× faster than any other sector since 1990</div>
+      <a href="/behaviors" class="story-btn">Check Your Behavior →</a>
+    </div>
+  </div>
+
+  <!-- STORY 3 -->
+  <div class="story">
+    <div class="video-box">
+      <video src="/videos/industry.mp4" autoplay muted loop playsinline></video>
+      <div class="video-overlay"><span class="vo-tag">INDUSTRY</span></div>
+    </div>
+    <div class="info">
+      <div class="tag">INDUSTRIAL GROWTH</div>
+      <h3>The Cost of Production</h3>
+      <p>Steel, cement, chemicals — the backbone of modern civilization releases 22% of global CO₂. Without industrial transformation, no climate target can be met. The AI must model this shift.</p>
+      <div class="story-fact">🏭 Industrial decarbonization requires $11 trillion in investment by 2050</div>
+      <a href="/disaster" class="story-btn">See Disaster Risks →</a>
+    </div>
+  </div>
+
+  <!-- STORY 4 -->
+  <div class="story story-rev">
+    <div class="video-box">
+      <video src="/videos/future.mp4" autoplay muted loop playsinline></video>
+      <div class="video-overlay"><span class="vo-tag">FUTURE</span></div>
+    </div>
+    <div class="info">
+      <div class="tag">POSSIBLE RECOVERY</div>
+      <h3>The Path Forward</h3>
+      <p>Solar costs fell 90% in a decade. EV adoption is accelerating. Forests can be restored. With the right decisions — guided by AI — a +1.5°C future is still achievable. The choice is now.</p>
+      <div class="story-fact">🌱 1.1 trillion trees could sequester 205 gigatonnes of CO₂</div>
+      <a href="/climate" class="story-btn">Simulate a Better Future →</a>
+    </div>
+  </div>
+
+  <!-- NAVIGATION SECTION -->
+  <div class="nav-section">
+    <h3>Explore The Platform</h3>
+    <div class="nav-cards">
+      <a href="/climate"   class="nc"><span>⚡</span> Simulator</a>
+      <a href="/narrative" class="nc"><span>🎞</span> Narrative</a>
+      <a href="/disaster"  class="nc"><span>☣</span> Disaster Room</a>
+      <a href="/behaviors" class="nc"><span>🧠</span> Behavior Mirror</a>
+      <a href="/image"     class="nc"><span>🖼</span> Gallery</a>
+      <a href="/notebook"  class="nc"><span>📓</span> Notebook</a>
+      <a href="/history"   class="nc"><span>📊</span> History</a>
+      <a href="/leaderboard" class="nc"><span>🏆</span> Leaderboard</a>
+    </div>
+  </div>
+
+  <div class="footer-strip">
+    <h2>THE CLIMATE MIRROR</h2>
+    <p>The planet reflects our choices.</p>
+  </div>
+</div>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#020617;color:white;font-family:Inter,sans-serif;min-height:100vh;overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:-2;
+  background:linear-gradient(to bottom,rgba(2,6,23,.55),rgba(2,6,23,.92)),url("https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=2400&q=80");
+  background-size:cover;background-position:center;animation:drift 200s linear infinite;}
+@keyframes drift{from{transform:scale(1.05)}to{transform:scale(1.2)}}
+
+.wrapper{max-width:1400px;margin:0 auto;padding:48px 32px 80px;}
+.page-header{text-align:center;margin-bottom:80px;}
+.page-header h2{font-family:Orbitron,sans-serif;font-size:2.4rem;letter-spacing:8px;color:#cfffff;margin-bottom:14px;}
+.page-header p{max-width:700px;margin:0 auto;color:#9fb8c5;line-height:1.8;font-size:.95rem;}
+
+/* STORY */
+.story{display:grid;grid-template-columns:1.6fr 1fr;gap:50px;align-items:center;margin-bottom:100px;}
+.story-rev{direction:rtl;}.story-rev>*{direction:ltr;}
+
+/* VIDEO BOX */
+.video-box{position:relative;height:420px;border-radius:30px;overflow-x: hidden;
+  border:1px solid rgba(190,245,255,.35);
+  box-shadow:0 60px 120px rgba(0,0,0,.8),inset 0 0 80px rgba(200,245,255,.1);}
+.video-box::before{content:"";position:absolute;inset:-60px;background:radial-gradient(circle at 30% 25%,rgba(210,250,255,.3),transparent 55%),radial-gradient(circle at 70% 75%,rgba(140,210,255,.15),transparent 60%);filter:blur(80px);opacity:.7;z-index:-1;}
+video{width:140%;height:100%;object-fit:cover;margin-left:-20%;filter:contrast(1.1) saturate(1.2) brightness(.92);transition:.8s;}
+.video-box:hover video{transform:scale(1.06);}
+.video-overlay{position:absolute;bottom:16px;left:16px;}
+.vo-tag{padding:5px 14px;border-radius:20px;background:rgba(0,255,225,.15);border:1px solid rgba(0,255,225,.4);color:#00ffe1;font-family:Orbitron,sans-serif;font-size:.62rem;letter-spacing:2px;}
+
+/* INFO */
+.info{background:rgba(10,18,32,.78);backdrop-filter:blur(24px);border-radius:26px;padding:40px;border:1px solid rgba(255,255,255,.12);}
+.tag{display:inline-block;padding:5px 14px;border:1px solid rgba(190,245,255,.5);color:#cfffff;font-family:Orbitron,sans-serif;font-size:.6rem;letter-spacing:3px;margin-bottom:16px;}
+.info h3{font-family:Orbitron,sans-serif;font-size:1.6rem;margin-bottom:14px;color:#fff;}
+.info p{color:#b7cbd8;line-height:1.85;font-size:.9rem;margin-bottom:16px;}
+.story-fact{padding:10px 16px;background:rgba(0,255,225,.06);border-left:3px solid #00ffe1;border-radius:0 8px 8px 0;font-size:.78rem;color:#7dd3fc;margin-bottom:16px;}
+.story-btn{display:inline-block;padding:11px 22px;border-radius:8px;border:1px solid rgba(0,255,225,.4);color:#00ffe1;text-decoration:none;font-family:Orbitron,sans-serif;font-size:.62rem;letter-spacing:2px;transition:.3s;}
+.story-btn:hover{background:rgba(0,255,225,.1);transform:translateX(4px);}
+
+/* NAV SECTION */
+.nav-section{margin-top:40px;text-align:center;}
+.nav-section h3{font-family:Orbitron,sans-serif;font-size:1rem;color:#94a3b8;letter-spacing:4px;margin-bottom:24px;}
+.nav-cards{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;}
+.nc{padding:12px 22px;border-radius:10px;border:1px solid rgba(190,245,255,.25);color:#cfffff;font-family:Orbitron,sans-serif;font-size:.6rem;letter-spacing:3px;text-decoration:none;transition:.3s;display:flex;align-items:center;gap:7px;}
+.nc:hover{background:rgba(190,245,255,.08);border-color:rgba(190,245,255,.5);transform:translateY(-3px);}
+
+.footer-strip{text-align:center;margin-top:80px;padding-top:50px;border-top:1px solid rgba(190,245,255,.1);}
+.footer-strip h2{font-family:Orbitron,sans-serif;font-size:2rem;letter-spacing:10px;color:#cfffff;}
+.footer-strip p{margin-top:14px;color:#9fb8c5;font-size:.82rem;}
+
+@media(max-width:900px){.story{grid-template-columns:1fr;direction:ltr!important;}.video-box{height:260px;}.info{padding:28px;}}
+</style>
+</body>
+</html>

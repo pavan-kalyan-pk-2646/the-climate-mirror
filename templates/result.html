@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Analysis Result | Climate Mirror</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+{% from 'nav.html' import navbar %}
+{{ navbar(active='climate', user=user) }}
+
+<div class="wrap">
+
+<!-- ── AGENT PIPELINE ── -->
+<div class="pipeline">
+  <span class="pl-title">{{ agents_run }} AGENTS COMPLETED</span>
+  {% for lbl in ['ORCHESTRATOR','ANALYZER','ADVISOR','DISASTER','STORY','CHAT','FORECAST','COMPARATOR','POLICY'] %}
+  <div class="pa"><div class="pa-dot"></div>{{ lbl }}</div>
+  {% if not loop.last %}<span class="pa-arrow">→</span>{% endif %}
+  {% endfor %}
+</div>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="h-in">
+    <div class="h-tag">{{ country.upper() }} · {{ date }} · {{ time }}</div>
+    <div class="temp-big">+{{ temp }}°C</div>
+    <div class="impact-lbl">{{ impact }}</div>
+    <div class="sum-txt">{{ summary }}</div>
+    <div class="score-wrap">
+      <div>
+        <div class="score-n" style="color:{% if score > 60 %}#00ff88{% elif score > 35 %}#facc15{% else %}#ff4d4d{% endif %}">{{ score }}</div>
+        <div class="score-l">ECO SCORE / 100</div>
+      </div>
+      <div class="score-desc">{% if score > 60 %}🌱 Good sustainability level{% elif score > 35 %}⚠️ Needs improvement{% else %}🔥 Critical — urgent action{% endif %}</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── INPUT RECAP ── -->
+<div class="g4 mb">
+  {% for label, val, fid in [('Emissions', e, 'ib-e'), ('Energy', en, 'ib-en'), ('Transport', t, 'ib-t'), ('Industry', i, 'ib-i')] %}
+  <div class="inp-box">
+    <div class="il">{{ label }}</div>
+    <div class="iv">{{ val|int }}</div>
+    <div class="ibar"><div class="ifill" id="{{ fid }}"></div></div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- ── AGENT 1: ANALYZER + AGENT 2: ADVISOR ── -->
+<div class="g2 mb">
+
+  <!-- ANALYZER -->
+  <div class="card">
+    <div class="ct">🔬 Agent 1 — Analyzer</div>
+    <div class="dom-tag">DOMINANT: {{ analysis.dominant.name.upper() }} ({{ analysis.dominant.value|int }}/100)</div>
+    {% for f in analysis.ranked %}
+    <div class="factor-row">
+      <span class="fn">{{ f.name }}</span>
+      <div class="fb-wrap"><div class="fb" id="fb{{ loop.index }}"
+        style="background:{% if f.value > 70 %}#ff4d4d{% elif f.value > 40 %}#facc15{% else %}#00ff88{% endif %}"></div></div>
+      <span class="fv" style="color:{% if f.value > 70 %}#ff7070{% elif f.value > 40 %}#facc15{% else %}#00ff88{% endif %}">{{ f.value|int }}</span>
+    </div>
+    {% endfor %}
+    <div class="sev-line">SEVERITY:
+      <span style="color:{% if analysis.severity=='Critical' %}#ff4d4d{% elif analysis.severity=='High' %}#f97316{% elif analysis.severity=='Moderate' %}#facc15{% else %}#00ff88{% endif %}">
+        {{ analysis.severity.upper() }}
+      </span>
+    </div>
+    {% for ins in analysis.insights %}
+    <div class="insight-item">{{ ins }}</div>
+    {% endfor %}
+    {% if analysis.reduction_needed > 0 %}
+    <div class="reduction-box">🎯 Reduction needed to reach safe zone: <strong>{{ analysis.reduction_needed }}°C</strong></div>
+    {% endif %}
+  </div>
+
+  <!-- ADVISOR -->
+  <div class="card">
+    <div class="ct">🤖 Agent 2 — Advisor ({{ advice.count }} actions)</div>
+    {% for act in advice.actions %}
+    <div class="action-item">
+      <div class="act-hd">
+        <span class="act-title">{{ act.icon }} {{ act.title }}</span>
+        <span class="act-pri {% if 'P1' in act.priority %}p1{% elif 'P2' in act.priority %}p2{% else %}p3{% endif %}">{{ act.priority.split('—')[0].strip() }}</span>
+      </div>
+      <div class="act-detail">{{ act.detail }}</div>
+      <div class="act-time">⏱ {{ act.timeframe }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<!-- ── AGENT 3: DISASTER + AGENT 8: POLICY ── -->
+<div class="g2 mb">
+
+  <!-- DISASTER -->
+  <div class="card">
+    <div class="ct">⚠️ Agent 3 — Disaster Risk Matrix</div>
+    <div class="top-risk-box">Highest risk: <strong>{{ disasters.highest.upper() }}</strong> at {{ disasters.risks[disasters.highest] }}%</div>
+    {% for item in disasters.detail %}
+    <div class="risk-item">
+      <div class="risk-hd">
+        <span class="risk-nm">{{ item.icon }} {{ item.name.upper() }}</span>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span class="rlv rl-{{ item.level.lower() }}">{{ item.level }}</span>
+          <span class="risk-pct" style="color:{% if item.pct > 80 %}#ff4d4d{% elif item.pct > 65 %}#f97316{% elif item.pct > 45 %}#facc15{% else %}#00ff88{% endif %}">{{ item.pct }}%</span>
+        </div>
+      </div>
+      <div class="rb-bg"><div class="rb-fill" id="rf-{{ item.name }}"
+        style="background:{% if item.pct > 80 %}#ff4d4d{% elif item.pct > 65 %}#f97316{% elif item.pct > 45 %}#facc15{% else %}#00ff88{% endif %}"></div></div>
+      <div class="risk-desc">{{ item.desc }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- POLICY -->
+  <div class="card">
+    <div class="ct">🏛️ Agent 8 — Policy</div>
+    <div class="pol-hd">
+      <span class="pol-flag">{{ policy.flag }}</span>
+      <div><div class="pol-country">{{ policy.country }}</div><div class="pol-ctx">{{ policy.context }}</div></div>
+    </div>
+    {% if policy.urgent %}
+    <div class="pol-sec"><div class="pol-label">⚡ URGENT</div>
+      {% for u in policy.urgent %}<div class="pol-urgent">{{ u }}</div>{% endfor %}
+    </div>
+    {% endif %}
+    <div class="pol-sec">
+      <div class="pol-label">CURRENT STATUS</div>
+      <div class="pol-txt">{{ policy.current }}</div>
+    </div>
+    <div class="pol-sec">
+      <div class="pol-label">GAPS</div>
+      <div class="pol-txt">{{ policy.gaps }}</div>
+    </div>
+    <div class="pol-sec">
+      <div class="pol-label">RECOMMENDED ACTIONS</div>
+      {% for act in policy.actions %}<div class="pol-action">{{ act }}</div>{% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<!-- ── AGENT 7: COMPARATOR + CHARTS ── -->
+<div class="g2 mb">
+
+  <!-- COMPARATOR -->
+  <div class="card">
+    <div class="ct">📊 Agent 7 — Comparator</div>
+    <div class="g3 mb-sm">
+      <div class="comp-box">
+        <div class="cv" style="color:{% if comparator.vs_last and comparator.vs_last < 0 %}#00ff88{% elif comparator.vs_last and comparator.vs_last > 0 %}#ff4d4d{% else %}#7dd3fc{% endif %}">
+          {% if comparator.vs_last is not none %}{% if comparator.vs_last > 0 %}+{% endif %}{{ comparator.vs_last }}°C{% else %}—{% endif %}
+        </div>
+        <div class="cl">VS LAST RUN</div>
+      </div>
+      <div class="comp-box">
+        <div class="cv" style="color:{% if comparator.vs_best is not none and comparator.vs_best <= 0 %}#00ff88{% else %}#facc15{% endif %}">
+          {% if comparator.vs_best is not none %}{% if comparator.vs_best > 0 %}+{% endif %}{{ comparator.vs_best }}°C{% else %}—{% endif %}
+        </div>
+        <div class="cl">VS PERSONAL BEST</div>
+      </div>
+      <div class="comp-box">
+        <div class="cv" style="color:#00ffe1">{{ comparator.total_runs }}</div>
+        <div class="cl">TOTAL RUNS</div>
+      </div>
+    </div>
+    <div class="comp-ctx">{{ comparator.score_context }}</div>
+
+    <!-- PROJECTION CHART -->
+    <div class="ct" style="margin-top:16px">📈 Temp Projection 2026–2070</div>
+    <div style="position:relative;height:160px;"><canvas id="projChart"></canvas></div>
+  </div>
+
+  <!-- RADAR + FORECAST -->
+  <div class="card">
+    <div class="ct">📈 Agent 6 — Factor Radar & Forecast</div>
+    <div style="position:relative;height:190px;margin-bottom:14px;"><canvas id="radarChart"></canvas></div>
+    <div class="forecast-box">{{ forecast.label }}</div>
+    {% if forecast.projection and forecast.weeks %}
+    <div class="proj-row">
+      {% for idx in range(forecast.projection|length) %}
+      <div class="pbox">
+        <div class="pv">+{{ forecast.projection[idx] }}°C</div>
+        <div class="pl">{{ forecast.weeks[idx] }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- ── STORY ── -->
+<div class="card mb">
+  <div class="ct">📖 Agent 4 — Story Generator (Year 2050 Narrative)</div>
+  <div class="story-opening">{{ story.opening }}</div>
+  <div class="story-body">{{ story.body|safe }}</div>
+  <div class="story-outlook">{{ story.outlook }}</div>
+</div>
+
+<!-- ── ORCHESTRATOR LOG ── -->
+<div class="card mb">
+  <div class="ct" style="cursor:pointer" onclick="toggleLog()">
+    🔧 Orchestrator Log — {{ agents_run }} agents
+    <span id="log-toggle" style="margin-left:auto;font-size:.6rem;color:#64748b;">▼ SHOW LOG</span>
+  </div>
+  <div id="orch-log" class="orch-log" style="display:none;">
+    {% for line in orch_log %}
+    <div class="log-line {% if '[ORCHESTRATOR]' in line %}lc-orch{% elif '[MODEL]' in line %}lc-model{% elif '[AGENT' in line %}lc-agent{% elif '[INPUT]' in line %}lc-input{% else %}lc-done{% endif %}">{{ line }}</div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- ── ACTIONS ── -->
+<div class="actions">
+  <a href="/climate"    class="btn bp">⚡ NEW SIMULATION</a>
+  <a href="/history"    class="btn bo">📊 HISTORY</a>
+  <a href="/leaderboard"class="btn bo">🏆 LEADERBOARD</a>
+  <a href="/disaster"   class="btn bo">☣ DISASTER ROOM</a>
+  <a href="/stories"    class="btn bo">🎬 STORIES</a>
+  <a href="/notebook"   class="btn bo">📓 NOTEBOOK</a>
+  <a href="/behaviors"  class="btn bo">🧠 BEHAVIOR</a>
+  <a href="/image"      class="btn bo">🖼 GALLERY</a>
+</div>
+
+</div><!-- /wrap -->
+
+<style>
+:root{--g:#00ffe1;--bg:#020617;--card:rgba(11,18,32,.97);--low:#00ff88;--mid:#facc15;--high:#ff4d4d;--or:#f97316;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:white;font-family:Inter,sans-serif;min-height:100vh;overflow-x:hidden;
+  background-image:radial-gradient(circle at 20% 20%,rgba(0,255,225,.05),transparent 45%),radial-gradient(circle at 80% 80%,rgba(0,188,212,.04),transparent 45%);}
+.wrap{max-width:1440px;margin:0 auto;padding:22px 28px 60px;}
+.mb{margin-bottom:18px;}
+.mb-sm{margin-bottom:10px;}
+
+/* PIPELINE */
+.pipeline{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 16px;
+  background:rgba(0,255,225,.04);border:1px solid rgba(0,255,225,.12);border-radius:10px;margin-bottom:18px;flex-wrap:wrap;}
+.pl-title{font-family:Orbitron,sans-serif;font-size:.6rem;color:#64748b;letter-spacing:2px;margin-right:6px;}
+.pa{display:flex;align-items:center;gap:4px;padding:4px 9px;background:#020617;
+  border:1px solid rgba(0,255,225,.15);border-radius:20px;font-family:Orbitron,sans-serif;font-size:.55rem;color:#7dd3fc;letter-spacing:1px;}
+.pa-dot{width:5px;height:5px;background:var(--low);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.pa-arrow{color:rgba(0,255,225,.25);font-size:.75rem;}
+
+/* HERO */
+.hero{text-align:center;padding:40px 24px;background:var(--card);border-radius:20px;
+  border:1px solid rgba(0,255,225,.2);position:relative;overflow-x: hidden;margin-bottom:18px;}
+.hero::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,225,.12),transparent 55%);pointer-events:none;}
+.h-in{position:relative;z-index:1;}
+.h-tag{display:inline-block;padding:5px 16px;border-radius:20px;background:rgba(0,255,225,.08);border:1px solid rgba(0,255,225,.25);color:var(--g);font-size:.65rem;letter-spacing:3px;margin-bottom:12px;font-family:Orbitron,sans-serif;}
+.temp-big{font-family:Orbitron,sans-serif;font-size:clamp(3.2rem,6vw,6rem);font-weight:900;line-height:1;
+  background:linear-gradient(135deg,#fff,var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.impact-lbl{font-size:1.1rem;letter-spacing:3px;margin:8px 0;color:#e2e8f0;}
+.sum-txt{max-width:800px;margin:10px auto 0;color:#94a3b8;line-height:1.7;font-size:.85rem;}
+.score-wrap{display:inline-flex;align-items:center;gap:12px;background:rgba(0,255,225,.06);
+  border:1px solid rgba(0,255,225,.18);border-radius:40px;padding:8px 20px;margin-top:14px;}
+.score-n{font-family:Orbitron,sans-serif;font-size:1.5rem;font-weight:900;}
+.score-l{font-size:.58rem;color:#64748b;letter-spacing:2px;}
+.score-desc{font-size:.78rem;color:#94a3b8;max-width:180px;line-height:1.4;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+
+/* INPUT RECAP */
+.inp-box{background:#020617;border-radius:10px;padding:12px;text-align:center;border:1px solid rgba(255,255,255,.05);}
+.il{font-size:.58rem;color:#64748b;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;}
+.iv{font-family:JetBrains Mono,monospace;font-size:1.4rem;color:white;font-weight:700;}
+.ibar{height:4px;border-radius:2px;margin-top:6px;background:linear-gradient(to right,var(--low),var(--mid),var(--high));}
+.ifill{height:100%;border-radius:2px;transition:width 1.2s ease;width:0%;}
+
+/* CARD */
+.card{background:var(--card);border:1px solid rgba(0,255,225,.1);border-radius:16px;padding:20px;}
+.ct{font-family:Orbitron,sans-serif;font-size:.68rem;letter-spacing:3px;color:var(--g);margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;}
+.ct::after{content:"";flex:1;height:1px;background:linear-gradient(to right,rgba(0,255,225,.25),transparent);}
+
+/* ANALYZER */
+.dom-tag{display:inline-block;padding:4px 11px;border-radius:20px;font-size:.62rem;font-family:Orbitron,sans-serif;
+  background:rgba(0,255,225,.1);border:1px solid rgba(0,255,225,.3);color:var(--g);margin-bottom:12px;}
+.factor-row{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#020617;border-radius:8px;margin-bottom:5px;border:1px solid rgba(255,255,255,.04);}
+.fn{font-size:.75rem;color:#94a3b8;min-width:110px;}
+.fb-wrap{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow-x: hidden;}
+.fb{height:100%;border-radius:3px;transition:width 1.2s ease;width:0%;}
+.fv{font-family:JetBrains Mono,monospace;font-size:.88rem;font-weight:700;min-width:28px;text-align:right;}
+.sev-line{font-size:.68rem;color:#94a3b8;letter-spacing:1px;font-family:Orbitron,sans-serif;margin:10px 0 8px;}
+.insight-item{padding:8px 12px;background:rgba(0,255,225,.04);border-left:3px solid var(--g);border-radius:0 8px 8px 0;font-size:.8rem;line-height:1.6;color:#cbd5e1;margin-bottom:5px;}
+.reduction-box{padding:9px 12px;background:rgba(255,77,77,.06);border-left:3px solid #ff4d4d;border-radius:0 8px 8px 0;font-size:.78rem;color:#fca5a5;margin-top:8px;}
+
+/* ADVISOR */
+.action-item{padding:12px 14px;background:#020617;border-radius:10px;margin-bottom:7px;border-left:4px solid var(--g);}
+.act-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:5px;}
+.act-title{font-size:.84rem;font-weight:600;color:white;}
+.act-pri{font-size:.58rem;padding:2px 8px;border-radius:4px;font-family:Orbitron,sans-serif;letter-spacing:1px;white-space:nowrap;flex-shrink:0;}
+.p1{background:rgba(255,77,77,.15);color:#ff7070;border:1px solid rgba(255,77,77,.3);}
+.p2{background:rgba(250,204,21,.1);color:#facc15;border:1px solid rgba(250,204,21,.25);}
+.p3{background:rgba(0,255,225,.08);color:var(--g);border:1px solid rgba(0,255,225,.2);}
+.act-detail{font-size:.76rem;color:#94a3b8;line-height:1.6;}
+.act-time{font-size:.62rem;color:#475569;margin-top:4px;font-family:JetBrains Mono,monospace;}
+
+/* DISASTER */
+.top-risk-box{padding:8px 14px;background:rgba(255,77,77,.07);border-left:3px solid #ff4d4d;border-radius:0 8px 8px 0;font-size:.8rem;color:#fca5a5;margin-bottom:14px;}
+.risk-item{margin-bottom:12px;}
+.risk-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.risk-nm{font-family:Orbitron,sans-serif;font-size:.62rem;color:#94a3b8;letter-spacing:1px;}
+.rlv{font-size:.58rem;padding:2px 7px;border-radius:3px;font-family:Orbitron,sans-serif;letter-spacing:1px;}
+.rl-critical{background:rgba(255,77,77,.15);color:#ff7070;}
+.rl-high{background:rgba(249,115,22,.15);color:#fb923c;}
+.rl-moderate{background:rgba(250,204,21,.1);color:#facc15;}
+.rl-low{background:rgba(0,255,136,.1);color:#00ff88;}
+.rl-minimal{background:rgba(100,116,139,.1);color:#64748b;}
+.risk-pct{font-family:JetBrains Mono,monospace;font-size:.88rem;font-weight:700;}
+.rb-bg{background:#020617;height:7px;border-radius:4px;overflow-x: hidden;}
+.rb-fill{height:100%;border-radius:4px;transition:width 1.5s ease;width:0%;}
+.risk-desc{font-size:.7rem;color:#64748b;margin-top:4px;line-height:1.5;}
+
+/* POLICY */
+.pol-hd{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.pol-flag{font-size:1.8rem;}
+.pol-country{font-size:.88rem;font-weight:600;}
+.pol-ctx{font-size:.68rem;color:#64748b;letter-spacing:1px;}
+.pol-sec{margin-bottom:12px;}
+.pol-label{font-size:.6rem;color:var(--g);letter-spacing:2px;font-family:Orbitron,sans-serif;margin-bottom:5px;}
+.pol-txt{font-size:.78rem;color:#94a3b8;line-height:1.6;}
+.pol-action{padding:7px 11px;background:rgba(0,255,225,.04);border-left:2px solid var(--g);border-radius:0 6px 6px 0;font-size:.76rem;color:#cbd5e1;margin-bottom:4px;line-height:1.5;}
+.pol-urgent{padding:7px 11px;background:rgba(255,77,77,.06);border-left:3px solid #ff4d4d;border-radius:0 6px 6px 0;font-size:.76rem;color:#fca5a5;margin-bottom:4px;}
+
+/* COMPARATOR */
+.comp-box{background:#020617;border-radius:10px;padding:13px;text-align:center;border:1px solid rgba(255,255,255,.05);}
+.cv{font-family:JetBrains Mono,monospace;font-size:1.2rem;font-weight:700;}
+.cl{font-size:.58rem;color:#64748b;letter-spacing:1px;margin-top:4px;}
+.comp-ctx{padding:11px 14px;background:rgba(0,255,225,.04);border:1px solid rgba(0,255,225,.1);border-radius:10px;font-size:.8rem;color:#7dd3fc;line-height:1.6;margin-top:10px;}
+
+/* STORY */
+.story-opening{font-family:Orbitron,sans-serif;font-size:.82rem;color:var(--g);letter-spacing:2px;margin-bottom:12px;}
+.story-body{background:#020617;border-radius:12px;padding:18px;font-family:JetBrains Mono,monospace;font-size:.8rem;line-height:2;color:#7dd3fc;border-left:4px solid var(--g);margin-bottom:10px;}
+.story-outlook{padding:9px 14px;background:rgba(0,255,136,.06);border-radius:8px;font-size:.8rem;color:#00ff88;font-style:italic;}
+
+/* FORECAST */
+.forecast-box{padding:12px 16px;background:rgba(0,255,225,.04);border:1px solid rgba(0,255,225,.14);border-radius:10px;font-size:.8rem;color:#7dd3fc;line-height:1.6;margin-bottom:12px;}
+.proj-row{display:flex;gap:7px;}
+.pbox{flex:1;background:#020617;border-radius:8px;padding:9px;text-align:center;border:1px solid rgba(255,255,255,.05);}
+.pv{font-family:JetBrains Mono,monospace;font-size:.88rem;color:var(--g);}
+.pl{font-size:.58rem;color:#64748b;margin-top:3px;}
+
+/* ORCH LOG */
+.orch-log{background:#020617;border-radius:8px;padding:14px;font-family:JetBrains Mono,monospace;font-size:.7rem;line-height:1.9;max-height:200px;overflow-y:auto;border:1px solid rgba(0,255,136,.1);margin-top:10px;}
+.lc-orch{color:#00ffe1;}.lc-model{color:#7dd3fc;}.lc-agent{color:#facc15;}.lc-input{color:#94a3b8;}.lc-done{color:#00ff88;}
+
+/* ACTIONS */
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:4px;}
+.btn{padding:11px 22px;border-radius:9px;font-family:Orbitron,sans-serif;font-size:.6rem;letter-spacing:2px;cursor:pointer;text-decoration:none;display:inline-block;transition:.3s;}
+.bp{background:linear-gradient(135deg,var(--g),#00bcd4);color:#020617;border:none;font-weight:700;}
+.bo{background:transparent;border:1px solid rgba(0,255,225,.3);color:var(--g);}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,255,225,.18);}
+
+@media(max-width:900px){.g2,.g3{grid-template-columns:1fr;}.g4{grid-template-columns:1fr 1fr;}.pipeline{display:none;}}
+@media(max-width:500px){.g4{grid-template-columns:1fr;}}
+</style>
+
+<script>
+window.addEventListener("load", () => {
+  // Input bars
+  setTimeout(() => {
+    [['ib-e',{{ e }}],['ib-en',{{ en }}],['ib-t',{{ t }}],['ib-i',{{ i }}]].forEach(([id,v])=>{
+      const el=document.getElementById(id); if(el) el.style.width=v+'%';
+    });
+  }, 200);
+
+  // Factor bars
+  const fvals = [{{ analysis.ranked[0].value }},{{ analysis.ranked[1].value }},{{ analysis.ranked[2].value }},{{ analysis.ranked[3].value }}];
+  fvals.forEach((v,i)=>{
+    setTimeout(()=>{ const b=document.getElementById('fb'+(i+1)); if(b) b.style.width=v+'%'; }, 300+i*80);
+  });
+
+  // Disaster bars
+  {% for item in disasters.detail %}
+  setTimeout(()=>{ const b=document.getElementById('rf-{{ item.name }}'); if(b) b.style.width='{{ item.pct }}%'; }, 500);
+  {% endfor %}
+});
+
+// RADAR CHART
+new Chart(document.getElementById("radarChart"), {
+  type:"radar",
+  data:{
+    labels:["Emissions","Energy","Transport","Industry"],
+    datasets:[{data:[{{ e }},{{ en }},{{ t }},{{ i }}],
+      borderColor:"#00ffe1",backgroundColor:"rgba(0,255,225,.1)",
+      pointBackgroundColor:"#00ffe1",pointRadius:4,borderWidth:2}]
+  },
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{r:{grid:{color:"rgba(255,255,255,.07)"},angleLines:{color:"rgba(255,255,255,.07)"},
+      ticks:{display:false},pointLabels:{color:"#7dd3fc",font:{family:"Orbitron",size:9}}}}}
+});
+
+// PROJECTION CHART
+const base = {{ temp }};
+const years = [2026,2030,2035,2040,2045,2050,2060,2070];
+const proj  = years.map((y,i) => +(base*(1+i*0.085)).toFixed(2));
+new Chart(document.getElementById("projChart"), {
+  type:"line",
+  data:{labels:years,datasets:[
+    {label:"Projection",data:proj,borderColor:"#ff4d4d",tension:.4,fill:true,backgroundColor:"rgba(255,77,77,.06)",pointRadius:3,pointBackgroundColor:"#ff4d4d",borderWidth:2},
+    {label:"Safe (1.5°C)",data:years.map(()=>1.5),borderColor:"rgba(0,255,136,.45)",borderDash:[6,4],tension:0,fill:false,pointRadius:0},
+    {label:"Danger (2°C)",data:years.map(()=>2.0),borderColor:"rgba(250,204,21,.4)",borderDash:[3,3],tension:0,fill:false,pointRadius:0}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,animation:{duration:700},
+    plugins:{legend:{labels:{color:"#94a3b8",font:{size:9}}}},
+    scales:{
+      x:{ticks:{color:"#64748b",font:{size:9}},grid:{color:"rgba(255,255,255,.03)"}},
+      y:{ticks:{color:"#94a3b8",font:{size:9}},grid:{color:"rgba(255,255,255,.03)"}}
+    }}
+});
+
+function toggleLog(){
+  const el=document.getElementById('orch-log');
+  const btn=document.getElementById('log-toggle');
+  if(el.style.display==='none'){el.style.display='block';btn.textContent='▲ HIDE LOG';}
+  else{el.style.display='none';btn.textContent='▼ SHOW LOG';}
+}
+</script>
+</body>
+</html>
