@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>AI Climate Dashboard | Climate Mirror</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -33,7 +34,7 @@
 
     <div class="form-card">
       <form method="POST" action="/predict" id="simForm">
-        {{ csrf_token() }}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label>Country <span class="field-hint">Select your region</span></label>
         <select name="country">
           <option>India</option><option>USA</option><option>China</option>
@@ -452,7 +453,10 @@ async function sendChat() {
   try {
     const r = await fetch("/api/chat",{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
+      headers:{
+        "Content-Type":"application/json",
+        "X-CSRFToken": document.querySelector('meta[name="csrf-token"]').content
+      },
       body:JSON.stringify({message:msg})
     });
     const d = await r.json();

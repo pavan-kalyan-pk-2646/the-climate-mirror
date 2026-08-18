@@ -20,7 +20,7 @@
     <p class="card-sub">AI CLIMATE MIRROR · SECURE LOGIN</p>
 
     <form method="POST" action="/login" autocomplete="on">
-      {{ csrf_token() }}
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="group">
         <label>Username</label>
         <input type="text" name="username" placeholder="Enter your username" required autocomplete="username">

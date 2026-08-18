@@ -335,7 +335,7 @@
     <div class="notes-form-card">
       <h3>Add New Note</h3>
       <form method="POST" action="/save_note">
-        {{ csrf_token() }}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="text" name="title" placeholder="Note title (e.g. CO₂ findings, simulation insights...)" required class="notes-input">
         <textarea name="content" placeholder="Write your research notes, observations, ideas, or questions here..." required class="notes-ta"></textarea>
         <div class="form-row">

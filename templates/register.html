@@ -19,7 +19,7 @@
     <p class="card-sub">AI CLIMATE NEURAL REGISTRY</p>
 
     <form method="POST" action="/register" autocomplete="on">
-      {{ csrf_token() }}
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="group">
         <label>Username</label>
         <input type="text" name="username" placeholder="Choose a username" required autocomplete="username" minlength="3">
